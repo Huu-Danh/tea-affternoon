@@ -1,0 +1,256 @@
+import Link from "next/link";
+import { ChevronDown, Clock, MapPin, Shirt } from "lucide-react";
+import { ExperienceCard } from "@/components/experience-card";
+import { Illustration, Photo } from "@/components/photo";
+import { Reveal } from "@/components/reveal";
+import { btn, cn, eyebrow } from "@/components/ui";
+import { experiences } from "@/data/experiences";
+import { venue } from "@/data/venue";
+
+const faqs = [
+  {
+    q: "Tôi có cần đặt trước không?",
+    a: "Nên đặt trước, đặc biệt vào cuối tuần. Mỗi khung giờ chỉ có số bàn giới hạn để đảm bảo chất lượng phục vụ.",
+  },
+  {
+    q: "Chính sách huỷ và đổi lịch thế nào?",
+    a: "Miễn phí huỷ hoặc đổi lịch trước 24 giờ. Huỷ trong vòng 24 giờ trước giờ đặt sẽ không được hoàn tiền.",
+  },
+  {
+    q: "Nhà hàng có phục vụ món chay hoặc không gluten?",
+    a: "Có. Vui lòng ghi chú khi đặt chỗ, bếp sẽ chuẩn bị tháp bánh chay, không gluten hoặc không hạt cho bạn.",
+  },
+  {
+    q: "Tôi có thể đặt cho nhóm trên 8 khách?",
+    a: `Với nhóm từ 9 khách trở lên hoặc sự kiện riêng, vui lòng liên hệ ${venue.phone} để được sắp xếp không gian phù hợp.`,
+  },
+  {
+    q: "Có quy định trang phục không?",
+    a: `${venue.dressCode}. Vui lòng không mặc đồ bơi hoặc dép lê.`,
+  },
+];
+
+const tiers = [
+  {
+    art: "stand" as const,
+    title: "Savouries",
+    text: "Sandwich cắt tay, tart nấm Gruyère, cá hồi xông khói và trứng truffle.",
+  },
+  {
+    art: "cup" as const,
+    title: "Scones",
+    text: "Nướng mỗi giờ, ăn kèm kem đông Devon, mứt dâu Đà Lạt và lemon curd.",
+  },
+  {
+    art: "pot" as const,
+    title: "Sweets & Tea",
+    text: "Năm loại bánh ngọt theo mùa cùng hơn 20 loại trà tuyển chọn, phục vụ không giới hạn.",
+  },
+];
+
+export default function Home() {
+  return (
+    <>
+      {/* HERO */}
+      <section className="relative">
+        <Photo
+          alt="Không gian trà chiều tại sảnh"
+          tone="forest"
+          art="stand"
+          className="h-[calc(100svh-4rem)] min-h-[560px] lg:h-[calc(100svh-5rem)]"
+          artClassName="h-[34%] w-auto -translate-y-[60%] opacity-40 lg:mr-[9%] lg:ml-auto lg:h-[62%] lg:translate-y-0"
+        >
+          <div className="absolute inset-0 bg-linear-to-t from-forest-dark/90 via-forest-dark/30 to-transparent" />
+          <div className="absolute inset-x-0 bottom-0 mx-auto max-w-7xl px-4 pb-14 sm:px-6 lg:px-8 lg:pb-20">
+            <div className="max-w-2xl animate-fade-up text-cream">
+              <p className={cn(eyebrow, "text-gold-soft")}>
+                {venue.lounge} · {venue.name}
+              </p>
+              <h1 className="mt-5 font-display text-5xl leading-[1.02] sm:text-6xl lg:text-7xl">
+                {venue.tagline}
+              </h1>
+              <p className="mt-6 max-w-lg text-base leading-relaxed text-cream/80 sm:text-lg">
+                Tháp bánh thủ công, trà tuyển chọn và tiếng dương cầm mỗi chiều trong sảnh cổ điển.
+              </p>
+              <div className="mt-9 flex flex-wrap gap-3">
+                <Link href="#experiences" className={btn.gold}>
+                  Chọn gói trà chiều
+                </Link>
+                <Link href="#menu" className={btn.light}>
+                  Xem thực đơn
+                </Link>
+              </div>
+            </div>
+          </div>
+          <a
+            href="#info"
+            className="absolute bottom-6 right-6 hidden size-11 items-center justify-center rounded-full border border-cream/30 text-cream/80 transition hover:bg-cream/10 lg:flex"
+            aria-label="Cuộn xuống"
+          >
+            <ChevronDown className="size-5" />
+          </a>
+        </Photo>
+      </section>
+
+      {/* INFO STRIP */}
+      <section id="info" className="border-b border-line bg-paper">
+        <div className="mx-auto grid max-w-7xl divide-y divide-line px-4 sm:grid-cols-3 sm:divide-x sm:divide-y-0 sm:px-6 lg:px-8">
+          {[
+            { icon: Clock, label: "Giờ phục vụ", value: venue.hours },
+            { icon: MapPin, label: "Địa điểm", value: venue.lounge },
+            { icon: Shirt, label: "Trang phục", value: venue.dressCode },
+          ].map(({ icon: Icon, label, value }) => (
+            <div key={label} className="flex items-center gap-4 py-6 sm:justify-center sm:px-6">
+              <Icon className="size-5 text-gold" />
+              <div>
+                <p className="text-[11px] uppercase tracking-[0.2em] text-muted">{label}</p>
+                <p className="mt-0.5 font-display text-xl">{value}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* EXPERIENCES */}
+      <section id="experiences" className="mx-auto max-w-7xl px-4 py-24 sm:px-6 lg:px-8 lg:py-32">
+        <Reveal className="mx-auto max-w-2xl text-center">
+          <p className={eyebrow}>Trải nghiệm</p>
+          <h2 className="mt-4 font-display text-4xl sm:text-5xl">Chọn buổi chiều của bạn</h2>
+          <p className="mt-5 text-muted">
+            Bốn cách thưởng thức trà chiều, từ tháp bánh kiểu Anh kinh điển đến hương vị bánh trái miền Nam.
+          </p>
+        </Reveal>
+        <div className="mt-16 grid gap-6 sm:grid-cols-2 xl:grid-cols-4">
+          {experiences.map((exp, i) => (
+            <Reveal key={exp.slug} delay={i * 0.08}>
+              <ExperienceCard exp={exp} index={i} />
+            </Reveal>
+          ))}
+        </div>
+      </section>
+
+      {/* STORY */}
+      <section className="bg-sand/60">
+        <div className="mx-auto grid max-w-7xl items-center gap-12 px-4 py-24 sm:px-6 lg:grid-cols-2 lg:gap-20 lg:px-8 lg:py-32">
+          <Reveal>
+            <Photo alt="Bộ ấm trà sứ" tone="blush" art="pot" className="aspect-[4/5] rounded-[2rem]" />
+          </Reveal>
+          <Reveal delay={0.1}>
+            <p className={eyebrow}>Câu chuyện</p>
+            <h2 className="mt-4 font-display text-4xl leading-tight sm:text-5xl">
+              Một nghi thức chậm rãi giữa thành phố vội vã
+            </h2>
+            <div className="mt-6 space-y-4 leading-relaxed text-muted">
+              <p>
+                Mỗi buổi chiều, sảnh {venue.lounge} chuyển mình thành một phòng trà ấm cúng. Ánh nắng muộn xuyên qua
+                ô cửa vòm, tiếng dương cầm vang nhẹ và những tháp bánh ba tầng lần lượt được mang ra.
+              </p>
+              <p>
+                Đội ngũ bếp bánh chuẩn bị mọi thứ ngay trong ngày: scone nướng mỗi giờ, mứt nấu từ dâu Đà Lạt, sô-cô-la
+                Việt Nam và trà tuyển chọn từ những vườn trà cổ thụ phía Bắc.
+              </p>
+            </div>
+            <dl className="mt-10 grid grid-cols-3 gap-6 border-t border-line pt-8">
+              {[
+                ["20+", "loại trà"],
+                ["11", "món mỗi tháp"],
+                ["100%", "làm trong ngày"],
+              ].map(([n, l]) => (
+                <div key={l}>
+                  <dt className="font-display text-4xl text-forest">{n}</dt>
+                  <dd className="mt-1 text-xs uppercase tracking-wider text-muted">{l}</dd>
+                </div>
+              ))}
+            </dl>
+          </Reveal>
+        </div>
+      </section>
+
+      {/* MENU */}
+      <section id="menu" className="bg-forest text-cream">
+        <div className="mx-auto max-w-7xl px-4 py-24 sm:px-6 lg:px-8 lg:py-32">
+          <Reveal className="max-w-2xl">
+            <p className={cn(eyebrow, "text-gold-soft")}>Thực đơn</p>
+            <h2 className="mt-4 font-display text-4xl sm:text-5xl">Ba tầng của một buổi chiều</h2>
+          </Reveal>
+          <div className="mt-16 grid gap-px overflow-hidden rounded-3xl bg-cream/10 md:grid-cols-3">
+            {tiers.map((t, i) => (
+              <Reveal key={t.title} delay={i * 0.1} className="bg-forest p-8 lg:p-10">
+                <Illustration art={t.art} className="size-20 text-gold-soft" />
+                <p className="mt-8 font-display text-sm tracking-[0.3em] text-gold-soft">0{i + 1}</p>
+                <h3 className="mt-2 font-display text-3xl">{t.title}</h3>
+                <p className="mt-4 leading-relaxed text-cream/70">{t.text}</p>
+              </Reveal>
+            ))}
+          </div>
+          <div className="mt-12 text-center">
+            <Link href="/experiences/classic-afternoon-tea/" className={btn.light}>
+              Xem thực đơn đầy đủ
+            </Link>
+          </div>
+        </div>
+      </section>
+
+      {/* GALLERY */}
+      <section id="gallery" className="mx-auto max-w-7xl px-4 py-24 sm:px-6 lg:px-8 lg:py-32">
+        <Reveal className="flex flex-col justify-between gap-6 md:flex-row md:items-end">
+          <div>
+            <p className={eyebrow}>Không gian</p>
+            <h2 className="mt-4 font-display text-4xl sm:text-5xl">Sảnh trà cổ điển</h2>
+          </div>
+          <p className="max-w-md text-muted">
+            Trần cao, đèn chùm pha lê và những bộ sofa nhung, nơi mỗi buổi trà chiều là một khoảnh khắc đáng nhớ.
+          </p>
+        </Reveal>
+        <div className="mt-12 grid auto-rows-[180px] grid-cols-2 gap-4 md:auto-rows-[220px] md:grid-cols-4">
+          <Photo alt="Sảnh chính" tone="forest" art="stand" className="col-span-2 row-span-2 rounded-3xl" />
+          <Photo alt="Bàn trà cạnh cửa sổ" tone="blush" art="cup" className="rounded-3xl" />
+          <Photo alt="Ấm trà" tone="gold" art="pot" className="rounded-3xl" />
+          <Photo alt="Bánh ngọt" tone="ink" art="stand" className="rounded-3xl" />
+          <Photo alt="Tách trà" tone="blush" art="cup" className="rounded-3xl" />
+        </div>
+      </section>
+
+      {/* FAQ */}
+      <section id="faq" className="border-t border-line bg-paper">
+        <div className="mx-auto grid max-w-7xl gap-12 px-4 py-24 sm:px-6 lg:grid-cols-[1fr_2fr] lg:px-8 lg:py-32">
+          <Reveal>
+            <p className={eyebrow}>Hỏi đáp</p>
+            <h2 className="mt-4 font-display text-4xl sm:text-5xl">Trước khi bạn đến</h2>
+            <p className="mt-5 text-muted">
+              Cần hỗ trợ thêm? Gọi{" "}
+              <a href={`tel:${venue.phone.replace(/\s/g, "")}`} className="text-forest underline underline-offset-4">
+                {venue.phone}
+              </a>
+            </p>
+          </Reveal>
+          <div className="divide-y divide-line border-y border-line">
+            {faqs.map((f) => (
+              <details key={f.q} className="group py-6">
+                <summary className="flex cursor-pointer items-center justify-between gap-6 font-display text-2xl">
+                  {f.q}
+                  <span className="flex size-8 shrink-0 items-center justify-center rounded-full border border-line text-lg transition group-open:rotate-45">
+                    +
+                  </span>
+                </summary>
+                <p className="mt-4 max-w-2xl leading-relaxed text-muted">{f.a}</p>
+              </details>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* CTA */}
+      <section className="mx-auto max-w-7xl px-4 py-24 sm:px-6 lg:px-8">
+        <Photo alt="Trà chiều" tone="gold" art="cup" className="rounded-[2rem]">
+          <div className="relative flex flex-col items-start gap-6 bg-linear-to-r from-[#5c4524]/80 to-transparent p-10 text-paper sm:p-16">
+            <h2 className="max-w-xl font-display text-4xl leading-tight sm:text-5xl">Dành một buổi chiều cho chính mình</h2>
+            <Link href="#experiences" className={cn(btn.primary, "bg-paper text-forest hover:bg-cream")}>
+              Đặt chỗ ngay
+            </Link>
+          </div>
+        </Photo>
+      </section>
+    </>
+  );
+}

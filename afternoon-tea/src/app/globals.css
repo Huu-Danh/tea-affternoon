@@ -1,0 +1,74 @@
+@import "tailwindcss";
+
+@theme {
+  --color-cream: #f8f3ea;
+  --color-paper: #fffdf8;
+  --color-sand: #efe6d6;
+  --color-line: #e2d6c1;
+  --color-ink: #2a2320;
+  --color-muted: #6f645b;
+  --color-forest: #23403a;
+  --color-forest-dark: #172b27;
+  --color-gold: #b08d57;
+  --color-gold-soft: #d9c29a;
+  --color-blush: #ead7cb;
+  --color-danger: #a2412f;
+
+  --font-display: var(--font-cormorant), "Times New Roman", serif;
+  --font-sans: var(--font-bevn), system-ui, sans-serif;
+
+  --animate-fade-up: fade-up 0.7s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+
+  @keyframes fade-up {
+    from {
+      opacity: 0;
+      transform: translateY(16px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+}
+
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: 5rem;
+}
+
+body {
+  background: var(--color-cream);
+  color: var(--color-ink);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+}
+
+::selection {
+  background: var(--color-gold-soft);
+  color: var(--color-ink);
+}
+
+/* Vân giấy nhẹ cho nền ảnh placeholder */
+.grain {
+  background-image: radial-gradient(rgba(255, 255, 255, 0.08) 1px, transparent 1px);
+  background-size: 3px 3px;
+}
+
+details > summary {
+  list-style: none;
+}
+details > summary::-webkit-details-marker {
+  display: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
