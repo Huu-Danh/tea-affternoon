@@ -40,6 +40,7 @@ export default async function ExperiencePage({ params }: PageProps<"/experiences
           alt={exp.name}
           tone={exp.tone}
           art="stand"
+          fit="contain"
           className="mt-6 aspect-[16/9] rounded-[2rem] sm:aspect-[21/8]"
         >
           {exp.badge && (
@@ -133,10 +134,11 @@ export default async function ExperiencePage({ params }: PageProps<"/experiences
         </div>
       </div>
 
+      {others.length > 0 && (
       <section className="border-t border-line bg-sand/50">
         <div className="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8">
-          <h2 className="font-display text-4xl">Có thể bạn cũng thích</h2>
-          <div className="mt-10 grid gap-6 md:grid-cols-3">
+          <h2 className="font-display text-4xl">{others.length === 1 ? "Lựa chọn còn lại" : "Có thể bạn cũng thích"}</h2>
+          <div className="mt-10 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
             {others.map((o) => (
               <Link
                 key={o.slug}
@@ -153,6 +155,7 @@ export default async function ExperiencePage({ params }: PageProps<"/experiences
           </div>
         </div>
       </section>
+      )}
     </>
   );
 }

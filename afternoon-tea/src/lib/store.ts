@@ -13,6 +13,8 @@ export type Guest = {
   occasion: string;
   note: string;
   marketing: boolean;
+  /** Lời chúc trên thiệp (gói có perks.greetingCard) */
+  cardMessage?: string;
 };
 
 export type PaymentMethod = "vnpay" | "momo" | "card";

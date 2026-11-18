@@ -1,11 +1,12 @@
 import Link from "next/link";
-import { ChevronDown, Clock, MapPin, Shirt } from "lucide-react";
+import { Check, ChevronDown, Clock, MapPin, Minus, Shirt } from "lucide-react";
 import { ExperienceCard } from "@/components/experience-card";
 import { Illustration, Photo } from "@/components/photo";
 import { Reveal } from "@/components/reveal";
 import { btn, cn, eyebrow } from "@/components/ui";
-import { experiences } from "@/data/experiences";
+import { comparison, experiences } from "@/data/experiences";
 import { venue } from "@/data/venue";
+import { formatVnd } from "@/lib/format";
 
 const faqs = [
   {
@@ -33,18 +34,18 @@ const faqs = [
 const tiers = [
   {
     art: "stand" as const,
-    title: "Savouries",
-    text: "Các món mặn nhẹ như sandwich và bánh tart nhỏ, mở đầu cho buổi trà chiều.",
+    title: "Món mặn",
+    text: "Các món mặn mở đầu buổi trà chiều, trình bày trên khay phục vụ 3 tầng.",
   },
   {
     art: "cup" as const,
-    title: "Scones",
-    text: "Bánh scone ăn kèm Strawberry Jam và Cream theo đúng phong cách trà chiều châu Âu.",
+    title: "Bánh",
+    text: "Các loại bánh theo phong cách trà chiều châu Âu, đi kèm Strawberry Jam và Cream.",
   },
   {
     art: "pot" as const,
-    title: "Sweets & Tea",
-    text: "Bánh ngọt tinh tế cùng các loại trà, phục vụ trong bộ ấm tách trà sang trọng.",
+    title: "Trà",
+    text: "Lựa chọn trà theo khẩu vị, phục vụ cùng bộ tách trà và dụng cụ đi kèm.",
   },
 ];
 
@@ -117,16 +118,67 @@ export default function Home() {
           <p className={eyebrow}>Trải nghiệm</p>
           <h2 className="mt-4 font-display text-4xl sm:text-5xl">Chọn buổi chiều của bạn</h2>
           <p className="mt-5 text-muted">
-            Bốn cách thưởng thức trà chiều, từ tháp bánh kiểu Anh kinh điển đến hương vị bánh trái miền Nam.
+            Afternoon Tea phong cách châu Âu tại {venue.lounge}: thưởng trà, dùng bánh và món mặn, trò chuyện và thư
+            giãn.
           </p>
         </Reveal>
-        <div className="mt-16 grid gap-6 sm:grid-cols-2 xl:grid-cols-4">
+        <div className="mt-16 flex flex-wrap justify-center gap-6">
           {experiences.map((exp, i) => (
-            <Reveal key={exp.slug} delay={i * 0.08}>
+            <Reveal key={exp.slug} delay={i * 0.08} className="w-full sm:w-104">
               <ExperienceCard exp={exp} index={i} />
             </Reveal>
           ))}
         </div>
+
+        {experiences.length > 1 && (
+          <Reveal className="mx-auto mt-20 max-w-4xl">
+            <h3 className="text-center font-display text-3xl sm:text-4xl">So sánh hai lựa chọn</h3>
+            <div className="mt-8 overflow-hidden rounded-3xl border border-line bg-paper">
+              <table className="w-full table-fixed text-left text-sm">
+                <caption className="sr-only">So sánh các gói Afternoon Tea</caption>
+                <thead>
+                  <tr className="border-b border-line">
+                    <th scope="col" className="w-[34%] p-4 sm:p-6">
+                      <span className="sr-only">Hạng mục</span>
+                    </th>
+                    {experiences.map((e) => (
+                      <th key={e.slug} scope="col" className="p-4 align-bottom sm:p-6">
+                        <Link href={`/experiences/${e.slug}/`} className="font-display text-xl leading-tight hover:text-forest sm:text-2xl">
+                          {e.name}
+                        </Link>
+                        <p className="mt-1 font-display text-lg text-forest sm:text-xl">{formatVnd(e.pricePerGuest)}</p>
+                        <p className="text-xs font-normal text-muted">mỗi khách</p>
+                      </th>
+                    ))}
+                  </tr>
+                </thead>
+                <tbody>
+                  {comparison.map((row) => (
+                    <tr key={row.label} className="border-b border-line/70 last:border-0">
+                      <th scope="row" className="p-4 font-medium sm:px-6">
+                        {row.label}
+                      </th>
+                      {experiences.map((e) => {
+                        const v = row.values[e.slug];
+                        return (
+                          <td key={e.slug} className="p-4 text-ink/80 sm:px-6">
+                            {v === true ? (
+                              <Check className="size-5 text-forest" aria-label="Có" />
+                            ) : v === false || v === undefined ? (
+                              <Minus className="size-5 text-ink/25" aria-label="Không" />
+                            ) : (
+                              v
+                            )}
+                          </td>
+                        );
+                      })}
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </Reveal>
+        )}
       </section>
 
       {/* STORY */}
@@ -184,7 +236,7 @@ export default function Home() {
             ))}
           </div>
           <div className="mt-12 text-center">
-            <Link href="/experiences/classic-afternoon-tea/" className={btn.light}>
+            <Link href={`/experiences/${experiences[0].slug}/`} className={btn.light}>
               Xem thực đơn đầy đủ
             </Link>
           </div>

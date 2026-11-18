@@ -1,10 +1,10 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useForm } from "react-hook-form";
+import { useForm, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, Sparkles } from "lucide-react";
 import {
   CheckoutSteps,
   EmptyState,
@@ -15,7 +15,7 @@ import {
 } from "@/components/checkout-parts";
 import { Stepper } from "@/components/stepper";
 import { btn, cn, input } from "@/components/ui";
-import { addons, getExperience, occasions, type Experience } from "@/data/experiences";
+import { addonsFor, getExperience, occasions, type Experience } from "@/data/experiences";
 import { formatLongDate, formatVnd } from "@/lib/format";
 import { useBooking, useHydrated, type Draft } from "@/lib/store";
 
@@ -28,6 +28,7 @@ const schema = z.object({
   email: z.string().trim().pipe(z.email("Email không hợp lệ")),
   occasion: z.string(),
   note: z.string().max(300, "Tối đa 300 ký tự"),
+  cardMessage: z.string().max(200, "Tối đa 200 ký tự"),
   marketing: z.boolean(),
   agree: z.boolean().refine((v) => v, "Vui lòng đồng ý với điều khoản đặt chỗ"),
 });
@@ -64,6 +65,7 @@ function CheckoutForm({ draft, exp }: { draft: Draft; exp: Experience }) {
   const {
     register,
     handleSubmit,
+    control,
     formState: { errors, isSubmitting },
   } = useForm<FormValues>({
     resolver: zodResolver(schema),
@@ -73,10 +75,14 @@ function CheckoutForm({ draft, exp }: { draft: Draft; exp: Experience }) {
       email: draft.guest?.email ?? "",
       occasion: draft.guest?.occasion ?? occasions[0],
       note: draft.guest?.note ?? "",
+      cardMessage: draft.guest?.cardMessage ?? "",
       marketing: draft.guest?.marketing ?? false,
       agree: false,
     },
   });
+
+  const occasion = useWatch({ control, name: "occasion" });
+  const hasOccasion = occasion !== occasions[0];
 
   if (remaining === 0) return <HoldExpired slug={exp.slug} />;
 
@@ -88,6 +94,7 @@ function CheckoutForm({ draft, exp }: { draft: Draft; exp: Experience }) {
       occasion: v.occasion,
       note: v.note,
       marketing: v.marketing,
+      cardMessage: exp.perks?.greetingCard ? v.cardMessage.trim() : undefined,
     });
     router.push("/payment/");
   };
@@ -144,6 +151,24 @@ function CheckoutForm({ draft, exp }: { draft: Draft; exp: Experience }) {
                 ))}
               </select>
             </Field>
+            {exp.perks?.tableDecor && hasOccasion && (
+              <p className="flex gap-3 rounded-2xl bg-gold/10 p-4 text-sm text-ink/80">
+                <Sparkles className="mt-0.5 size-4 shrink-0 text-gold" />
+                Gói {exp.name} bao gồm trang trí bàn cho dịp {occasion.toLowerCase()} của bạn.
+              </p>
+            )}
+            {exp.perks?.greetingCard && (
+              <Field label="Lời chúc trên thiệp chúc mừng (tuỳ chọn)" error={errors.cardMessage?.message} id="cardMessage">
+                <textarea
+                  id="cardMessage"
+                  rows={2}
+                  placeholder="Ví dụ: Chúc mừng sinh nhật mẹ!"
+                  className={cn(input, "resize-none")}
+                  aria-invalid={!!errors.cardMessage}
+                  {...register("cardMessage")}
+                />
+              </Field>
+            )}
             <Field label="Ghi chú (dị ứng, yêu cầu chỗ ngồi...)" error={errors.note?.message} id="note">
               <textarea id="note" rows={3} className={cn(input, "resize-none")} aria-invalid={!!errors.note} {...register("note")} />
             </Field>
@@ -153,7 +178,7 @@ function CheckoutForm({ draft, exp }: { draft: Draft; exp: Experience }) {
             <legend className="font-display text-2xl">Thêm trải nghiệm</legend>
             <p className="mt-1 text-sm text-muted">Tuỳ chọn, giúp buổi chiều thêm trọn vẹn.</p>
             <div className="mt-5 grid gap-3">
-              {addons.map((a) => {
+              {addonsFor(exp.slug).map((a) => {
                 const qty = draft.addons[a.id] ?? 0;
                 return (
                   <div

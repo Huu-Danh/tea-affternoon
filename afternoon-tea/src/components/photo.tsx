@@ -22,6 +22,7 @@ export function Photo({
   art = "cup",
   className,
   artClassName,
+  fit = "cover",
   children,
 }: {
   src?: string;
@@ -31,11 +32,28 @@ export function Photo({
   className?: string;
   /** Vị trí/kích thước hình minh hoạ (khi chưa có ảnh thật) */
   artClassName?: string;
+  /**
+   * "contain": hiện trọn ảnh ở giữa, nền là chính ảnh đó làm mờ.
+   * Dùng cho khung rộng khi ảnh nhỏ hoặc ảnh dọc để không bị cắt/vỡ.
+   */
+  fit?: "cover" | "contain";
   children?: React.ReactNode;
 }) {
   return (
     <div className={cn("relative overflow-hidden bg-linear-to-br", tones[tone], className)}>
-      {src ? (
+      {src && fit === "contain" ? (
+        <>
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src={withBasePath(src)}
+            alt=""
+            aria-hidden
+            className="absolute inset-0 h-full w-full scale-110 object-cover opacity-70 blur-2xl"
+          />
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src={withBasePath(src)} alt={alt} className="absolute inset-0 h-full w-full object-contain drop-shadow-2xl" />
+        </>
+      ) : src ? (
         // eslint-disable-next-line @next/next/no-img-element
         <img src={withBasePath(src)} alt={alt} className="absolute inset-0 h-full w-full object-cover" loading="lazy" />
       ) : (

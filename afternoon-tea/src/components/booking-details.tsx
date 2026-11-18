@@ -15,6 +15,7 @@ export function BookingDetails({ b }: { b: Booking }) {
     ["Liên hệ", `${b.guest.phone} · ${b.guest.email}`],
   ];
   if (b.guest.occasion && b.guest.occasion !== "Không có") rows.push(["Dịp", b.guest.occasion]);
+  if (b.guest.cardMessage) rows.push(["Thiệp", `“${b.guest.cardMessage}”`]);
   if (extras.length) rows.push(["Thêm", extras.map((a) => `${a.name} × ${b.addons[a.id]}`).join(", ")]);
   if (b.guest.note) rows.push(["Ghi chú", b.guest.note]);
   rows.push(["Thanh toán", `${formatVnd(b.total)} · ${methodName[b.paymentMethod]}`]);

@@ -25,8 +25,11 @@ export type Experience = {
   highlights: string[];
   menu: MenuSection[];
   terms: string[];
+  /** Dịch vụ đi kèm: hiện thêm trường/ghi chú tương ứng ở bước checkout */
+  perks?: { greetingCard?: boolean; tableDecor?: boolean };
 };
 
+// TODO: chính sách mẫu, cần xác nhận với khách sạn
 const commonTerms = [
   "Giá tính theo khách, chưa bao gồm 5% phí phục vụ và 8% VAT.",
   "Thanh toán trước 100% để xác nhận chỗ.",
@@ -36,12 +39,13 @@ const commonTerms = [
 
 export const experiences: Experience[] = [
   {
-    slug: "classic-afternoon-tea",
-    name: "Classic Afternoon Tea",
-    tagline: "Tháp bánh ba tầng truyền thống kiểu Anh",
+    slug: "european-classic",
+    name: "European Classic",
+    tagline: "Afternoon Tea đầy đủ theo cách đơn giản",
     description:
-      "Trà chiều phong cách châu Âu: các loại trà, món mặn và bánh ngọt được trình bày trên khay 3 tầng, đi kèm Strawberry Jam, Cream và bộ ấm tách trà. Một buổi chiều để thưởng thức, thư giãn và gặp gỡ tại Me Linh Lounge.",
-    pricePerGuest: 690000,
+      "European Classic được xây dựng dành cho khách muốn trải nghiệm Afternoon Tea theo hướng đầy đủ nhưng đơn giản hơn. Gói tập trung vào những giá trị cơ bản của Afternoon Tea: thưởng trà, dùng bánh và món mặn, trò chuyện và thư giãn tại Me Linh Lounge.",
+    pricePerGuest: 499000,
+    // TODO: thời lượng, số khách và sức chứa là giá trị mẫu, cần xác nhận
     durationMinutes: 120,
     minPax: 1,
     maxPax: 8,
@@ -49,146 +53,96 @@ export const experiences: Experience[] = [
     // Khung phục vụ 14:00–17:00, mỗi lượt 2 giờ
     timeSlots: ["14:00", "14:30", "15:00"],
     capacityPerSlot: 12,
-    badge: "Bán chạy",
     tone: "forest",
+    image: "/images/european-classic.jpg",
     highlights: [
-      "Khay 3 tầng: món mặn, scone và bánh ngọt",
-      "Strawberry Jam, Cream và bộ ấm tách trà",
-      "Thời gian thưởng thức 2 giờ",
+      "1 lựa chọn trà",
+      "2 món mặn",
+      "3 loại bánh",
+      "Khay phục vụ 3 tầng",
+      "Bộ tách trà và dụng cụ đi kèm",
+      "Không gian thưởng thức tại Me Linh Lounge",
     ],
     menu: [
-      {
-        title: "Savouries",
-        items: [
-          "Sandwich dưa leo, phô mai kem và thì là",
-          "Trứng truffle trên bánh brioche",
-          "Cá hồi xông khói, kem chanh",
-          "Bánh tart nấm và phô mai Gruyère",
-        ],
-      },
-      {
-        title: "Scones",
-        items: [
-          "Scone bơ truyền thống",
-          "Scone nho khô",
-          "Strawberry Jam & Cream",
-        ],
-      },
-      {
-        title: "Sweets",
-        items: [
-          "Éclair vani Madagascar",
-          "Tart chanh dây và meringue",
-          "Mousse sô-cô-la Marou 70%",
-          "Macaron hoa hồng",
-          "Bánh opera trà xanh",
-        ],
-      },
+      { title: "Trà", items: ["1 lựa chọn trà"] },
+      { title: "Món mặn", items: ["2 món mặn"] },
+      { title: "Bánh", items: ["3 loại bánh"] },
+      { title: "Phục vụ", items: ["Khay phục vụ 3 tầng", "Bộ tách trà và dụng cụ đi kèm"] },
     ],
     terms: commonTerms,
   },
   {
-    slug: "champagne-afternoon-tea",
-    name: "Champagne Afternoon Tea",
-    tagline: "Trà chiều cổ điển kèm một ly Champagne",
+    slug: "european-premium",
+    name: "European Premium",
+    tagline: "Nguyên liệu cao cấp hơn, thêm bánh và dịch vụ đi kèm",
     description:
-      "Toàn bộ thực đơn Classic Afternoon Tea, thêm một ly Champagne cho mỗi khách. Lựa chọn lý tưởng cho dịp kỷ niệm, sinh nhật hay một buổi chiều thật đặc biệt.",
-    pricePerGuest: 1190000,
+      "European Premium dành cho khách muốn một buổi Afternoon Tea trọn vẹn hơn: món mặn dùng nguyên liệu cao cấp như cá hồi xông khói và trứng cá, thêm nhiều loại bánh như macaron, chocolate éclair và raspberry mousse cake, lựa chọn trà hoa cúc bên cạnh trà Earl Grey, cùng welcome drink. Với khách có dịp đặc biệt, nhóm có thể chuẩn bị thiệp chúc mừng và trang trí bàn.",
+    pricePerGuest: 599000,
+    // TODO: thời lượng, số khách và sức chứa là giá trị mẫu, cần xác nhận
     durationMinutes: 120,
-    minPax: 2,
+    minPax: 1,
     maxPax: 8,
     daysOfWeek: [0, 1, 2, 3, 4, 5, 6],
     timeSlots: ["14:00", "14:30", "15:00"],
     capacityPerSlot: 8,
-    badge: "Dịp đặc biệt",
+    badge: "Premium",
     tone: "gold",
+    // TODO: hiện đang trùng ảnh với Classic (2 file gửi lên giống hệt nhau)
+    image: "/images/european-premium.jpg",
     highlights: [
-      "Một ly Champagne cho mỗi khách",
-      "Toàn bộ thực đơn Classic Afternoon Tea",
-      "Ưu tiên bàn cạnh cửa sổ (tuỳ tình trạng)",
+      "Welcome drink",
+      "Trà Earl Grey hoặc trà hoa cúc",
+      "Món mặn với cá hồi xông khói và trứng cá",
+      "Thêm macaron, chocolate éclair và raspberry mousse cake",
+      "Thiệp chúc mừng theo yêu cầu",
+      "Trang trí bàn cho khách có dịp đặc biệt",
     ],
     menu: [
-      { title: "Welcome", items: ["Champagne (1 ly/khách)"] },
+      { title: "Welcome drink", items: ["Đồ uống chào mừng"] },
+      { title: "Trà", items: ["Earl Grey", "Trà hoa cúc"] },
+      { title: "Món mặn", items: ["Cá hồi xông khói", "Trứng cá"] },
+      { title: "Bánh", items: ["Macaron", "Chocolate éclair", "Raspberry mousse cake"] },
       {
-        title: "Savouries",
+        title: "Phục vụ",
         items: [
-          "Sandwich dưa leo, phô mai kem và thì là",
-          "Trứng truffle trên bánh brioche",
-          "Cá hồi xông khói, kem chanh",
-          "Bánh tart nấm và phô mai Gruyère",
+          "Khay phục vụ 3 tầng",
+          "Bộ tách trà và dụng cụ đi kèm",
+          "Thiệp chúc mừng (theo yêu cầu)",
+          "Trang trí bàn cho dịp đặc biệt",
         ],
       },
-      {
-        title: "Scones & Sweets",
-        items: [
-          "Scone bơ và scone nho khô",
-          "Strawberry Jam & Cream",
-          "Éclair vani, tart chanh dây, macaron hoa hồng",
-        ],
-      },
-    ],
-    terms: [...commonTerms, "Đồ uống có cồn chỉ phục vụ khách từ 18 tuổi."],
-  },
-  {
-    slug: "lotus-heritage-tea",
-    name: "Lotus Heritage Tea",
-    tagline: "Trà chiều cảm hứng bánh trái miền Nam",
-    description:
-      "Một cách kể lại trà chiều bằng hương vị Việt: trà sen Tây Hồ, bánh da lợn lá dứa, bánh bò nướng, chè hạt sen và những món mặn cuốn tinh tế. Chỉ phục vụ cuối tuần với số lượng giới hạn.",
-    pricePerGuest: 790000,
-    durationMinutes: 120,
-    minPax: 2,
-    maxPax: 6,
-    daysOfWeek: [0, 6],
-    timeSlots: ["14:00", "15:00"],
-    capacityPerSlot: 6,
-    badge: "Cuối tuần",
-    tone: "blush",
-    highlights: [
-      "Trà sen ướp thủ công theo cách truyền thống",
-      "9 món bánh mặn ngọt lấy cảm hứng ẩm thực Việt",
-      "Chỉ phục vụ Thứ bảy và Chủ nhật",
-    ],
-    menu: [
-      {
-        title: "Món mặn",
-        items: ["Gỏi cuốn tôm thịt, sốt me", "Bánh khọt mini", "Chả giò cua", "Bánh mì pa-tê nướng mini"],
-      },
-      {
-        title: "Bánh ngọt",
-        items: ["Bánh da lợn lá dứa", "Bánh bò nướng nước cốt dừa", "Bánh chuối nướng", "Chè hạt sen long nhãn"],
-      },
-      { title: "Trà", items: ["Trà sen Tây Hồ", "Trà Shan tuyết cổ thụ Hà Giang", "Trà ô long Bảo Lộc"] },
     ],
     terms: commonTerms,
+    perks: { greetingCard: true, tableDecor: true },
+  },
+];
+
+/** Bảng so sánh các gói trên trang chủ (theo thông tin sản phẩm) */
+export const comparison: { label: string; values: Record<string, string | boolean> }[] = [
+  { label: "Trà", values: { "european-classic": "1 lựa chọn trà", "european-premium": "Earl Grey hoặc trà hoa cúc" } },
+  {
+    label: "Món mặn",
+    values: { "european-classic": "2 món mặn", "european-premium": "Nguyên liệu cao cấp: cá hồi xông khói, trứng cá" },
   },
   {
-    slug: "little-royals-tea",
-    name: "Little Royals Tea",
-    tagline: "Bộ trà chiều dành cho bé từ 4 đến 12 tuổi",
-    description:
-      "Những chiếc bánh nhỏ xinh, sô-cô-la nóng và nước ép trái cây tươi trong bộ ấm chén dành riêng cho các bé. Bé nhận thêm một món quà nhỏ khi ra về. Đặt kèm cùng người lớn để có trải nghiệm trọn vẹn.",
-    pricePerGuest: 390000,
-    durationMinutes: 90,
-    minPax: 1,
-    maxPax: 6,
-    daysOfWeek: [0, 6],
-    // 90 phút: lượt cuối 15:30 kết thúc lúc 17:00
-    timeSlots: ["14:00", "15:00", "15:30"],
-    capacityPerSlot: 8,
-    tone: "ink",
-    highlights: ["Bánh nhỏ, sandwich và trái cây cho bé", "Sô-cô-la nóng hoặc nước ép tươi", "Quà tặng mang về"],
-    menu: [
-      { title: "Savouries", items: ["Sandwich gà và mayo", "Mini hot dog", "Pizza nhỏ phô mai"] },
-      { title: "Sweets", items: ["Cupcake cầu vồng", "Bánh quy bơ hình gấu", "Kem vani"] },
-      { title: "Đồ uống", items: ["Sô-cô-la nóng", "Nước cam ép", "Sữa dâu"] },
-    ],
-    terms: [...commonTerms, "Dành cho trẻ từ 4 đến 12 tuổi, có người lớn đi kèm."],
+    label: "Bánh",
+    values: {
+      "european-classic": "3 loại bánh",
+      "european-premium": "Thêm macaron, chocolate éclair, raspberry mousse cake",
+    },
   },
+  { label: "Khay 3 tầng & bộ tách trà", values: { "european-classic": true, "european-premium": true } },
+  { label: "Welcome drink", values: { "european-classic": false, "european-premium": true } },
+  { label: "Thiệp chúc mừng", values: { "european-classic": false, "european-premium": true } },
+  { label: "Trang trí bàn dịp đặc biệt", values: { "european-classic": false, "european-premium": true } },
 ];
 
 export function getExperience(slug: string) {
   return experiences.find((e) => e.slug === slug);
+}
+
+export function addonsFor(slug: string) {
+  return addons.filter((a) => !a.hiddenFor?.includes(slug));
 }
 
 export type Addon = {
@@ -197,8 +151,11 @@ export type Addon = {
   description: string;
   price: number;
   maxQty: number;
+  /** Ẩn với các gói đã bao gồm dịch vụ này */
+  hiddenFor?: string[];
 };
 
+// TODO: add-on mẫu, chưa có trong thông tin sản phẩm thật
 export const addons: Addon[] = [
   {
     id: "champagne",
@@ -220,6 +177,7 @@ export const addons: Addon[] = [
     description: "Bình hoa nhỏ theo mùa",
     price: 350000,
     maxQty: 1,
+    hiddenFor: ["european-premium"],
   },
   {
     id: "giftbox",
