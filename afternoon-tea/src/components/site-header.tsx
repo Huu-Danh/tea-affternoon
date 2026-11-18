@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useState } from "react";
 import { Menu, X } from "lucide-react";
 import { venue } from "@/data/venue";
+import { withBasePath } from "@/lib/base-path";
 import { btn, cn } from "./ui";
 
 const nav = [
@@ -20,11 +21,14 @@ export function SiteHeader() {
   return (
     <header className="sticky top-0 z-40 border-b border-line/70 bg-cream/85 backdrop-blur-md">
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:h-20 lg:px-8">
-        <Link href="/" className="group flex flex-col leading-none" onClick={() => setOpen(false)}>
-          <span className="font-display text-2xl font-medium tracking-wide text-forest lg:text-[28px]">
-            {venue.name}
+        <Link href="/" className="flex items-center gap-3 lg:gap-4" onClick={() => setOpen(false)} aria-label={`${venue.name} Afternoon Tea – Trang chủ`}>
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src={withBasePath("/logo.png")} alt={venue.name} width={306} height={214} className="h-10 w-auto lg:h-12" />
+          <span className="h-8 w-px bg-line lg:h-10" aria-hidden />
+          <span className="flex flex-col leading-none">
+            <span className="font-display text-xl font-medium text-forest lg:text-2xl">Afternoon Tea</span>
+            <span className="mt-1 text-[10px] uppercase tracking-[0.28em] text-gold">{venue.lounge}</span>
           </span>
-          <span className="mt-1 text-[10px] uppercase tracking-[0.32em] text-gold">Afternoon Tea</span>
         </Link>
 
         <nav className="hidden items-center gap-8 lg:flex" aria-label="Chính">

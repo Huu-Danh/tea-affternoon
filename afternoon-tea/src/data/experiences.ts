@@ -40,19 +40,20 @@ export const experiences: Experience[] = [
     name: "Classic Afternoon Tea",
     tagline: "Tháp bánh ba tầng truyền thống kiểu Anh",
     description:
-      "Bộ trà chiều kinh điển với sandwich, bánh scone nướng mỗi giờ, kem đông Devon và bánh ngọt thủ công của bếp trưởng bánh. Đi kèm trà tuyển chọn từ các vườn trà Việt Nam và thế giới, phục vụ không giới hạn.",
+      "Trà chiều phong cách châu Âu: các loại trà, món mặn và bánh ngọt được trình bày trên khay 3 tầng, đi kèm Strawberry Jam, Cream và bộ ấm tách trà. Một buổi chiều để thưởng thức, thư giãn và gặp gỡ tại Me Linh Lounge.",
     pricePerGuest: 690000,
     durationMinutes: 120,
     minPax: 1,
     maxPax: 8,
     daysOfWeek: [0, 1, 2, 3, 4, 5, 6],
-    timeSlots: ["14:00", "14:30", "15:00", "15:30", "16:00"],
+    // Khung phục vụ 14:00–17:00, mỗi lượt 2 giờ
+    timeSlots: ["14:00", "14:30", "15:00"],
     capacityPerSlot: 12,
     badge: "Bán chạy",
     tone: "forest",
     highlights: [
-      "Tháp bánh 3 tầng: 4 loại savoury, 2 loại scone, 5 loại bánh ngọt",
-      "Trà tuyển chọn phục vụ không giới hạn",
+      "Khay 3 tầng: món mặn, scone và bánh ngọt",
+      "Strawberry Jam, Cream và bộ ấm tách trà",
       "Thời gian thưởng thức 2 giờ",
     ],
     menu: [
@@ -70,7 +71,7 @@ export const experiences: Experience[] = [
         items: [
           "Scone bơ truyền thống",
           "Scone nho khô",
-          "Kem đông Devon, mứt dâu Đà Lạt, lemon curd",
+          "Strawberry Jam & Cream",
         ],
       },
       {
@@ -91,13 +92,13 @@ export const experiences: Experience[] = [
     name: "Champagne Afternoon Tea",
     tagline: "Trà chiều cổ điển kèm một ly Champagne",
     description:
-      "Toàn bộ thực đơn Classic Afternoon Tea, nâng tầm với một ly Champagne Moët & Chandon Brut Impérial cho mỗi khách. Lựa chọn lý tưởng cho dịp kỷ niệm, sinh nhật hay một buổi chiều thật đặc biệt.",
+      "Toàn bộ thực đơn Classic Afternoon Tea, thêm một ly Champagne cho mỗi khách. Lựa chọn lý tưởng cho dịp kỷ niệm, sinh nhật hay một buổi chiều thật đặc biệt.",
     pricePerGuest: 1190000,
     durationMinutes: 120,
     minPax: 2,
     maxPax: 8,
     daysOfWeek: [0, 1, 2, 3, 4, 5, 6],
-    timeSlots: ["14:00", "14:30", "15:00", "15:30", "16:00"],
+    timeSlots: ["14:00", "14:30", "15:00"],
     capacityPerSlot: 8,
     badge: "Dịp đặc biệt",
     tone: "gold",
@@ -107,7 +108,7 @@ export const experiences: Experience[] = [
       "Ưu tiên bàn cạnh cửa sổ (tuỳ tình trạng)",
     ],
     menu: [
-      { title: "Welcome", items: ["Moët & Chandon Brut Impérial (1 ly/khách)"] },
+      { title: "Welcome", items: ["Champagne (1 ly/khách)"] },
       {
         title: "Savouries",
         items: [
@@ -121,7 +122,7 @@ export const experiences: Experience[] = [
         title: "Scones & Sweets",
         items: [
           "Scone bơ và scone nho khô",
-          "Kem đông Devon, mứt dâu Đà Lạt",
+          "Strawberry Jam & Cream",
           "Éclair vani, tart chanh dây, macaron hoa hồng",
         ],
       },
@@ -139,7 +140,7 @@ export const experiences: Experience[] = [
     minPax: 2,
     maxPax: 6,
     daysOfWeek: [0, 6],
-    timeSlots: ["14:00", "15:00", "16:00"],
+    timeSlots: ["14:00", "15:00"],
     capacityPerSlot: 6,
     badge: "Cuối tuần",
     tone: "blush",
@@ -172,7 +173,8 @@ export const experiences: Experience[] = [
     minPax: 1,
     maxPax: 6,
     daysOfWeek: [0, 6],
-    timeSlots: ["14:00", "15:00", "16:00"],
+    // 90 phút: lượt cuối 15:30 kết thúc lúc 17:00
+    timeSlots: ["14:00", "15:00", "15:30"],
     capacityPerSlot: 8,
     tone: "ink",
     highlights: ["Bánh nhỏ, sandwich và trái cây cho bé", "Sô-cô-la nóng hoặc nước ép tươi", "Quà tặng mang về"],
@@ -201,7 +203,7 @@ export const addons: Addon[] = [
   {
     id: "champagne",
     name: "Thêm ly Champagne",
-    description: "Moët & Chandon Brut Impérial, 125ml",
+    description: "Một ly Champagne 125ml",
     price: 390000,
     maxQty: 8,
   },

@@ -34,17 +34,17 @@ const tiers = [
   {
     art: "stand" as const,
     title: "Savouries",
-    text: "Sandwich cắt tay, tart nấm Gruyère, cá hồi xông khói và trứng truffle.",
+    text: "Các món mặn nhẹ như sandwich và bánh tart nhỏ, mở đầu cho buổi trà chiều.",
   },
   {
     art: "cup" as const,
     title: "Scones",
-    text: "Nướng mỗi giờ, ăn kèm kem đông Devon, mứt dâu Đà Lạt và lemon curd.",
+    text: "Bánh scone ăn kèm Strawberry Jam và Cream theo đúng phong cách trà chiều châu Âu.",
   },
   {
     art: "pot" as const,
     title: "Sweets & Tea",
-    text: "Năm loại bánh ngọt theo mùa cùng hơn 20 loại trà tuyển chọn, phục vụ không giới hạn.",
+    text: "Bánh ngọt tinh tế cùng các loại trà, phục vụ trong bộ ấm tách trà sang trọng.",
   },
 ];
 
@@ -70,7 +70,7 @@ export default function Home() {
                 {venue.tagline}
               </h1>
               <p className="mt-6 max-w-lg text-base leading-relaxed text-cream/80 sm:text-lg">
-                Tháp bánh thủ công, trà tuyển chọn và tiếng dương cầm mỗi chiều trong sảnh cổ điển.
+                Trà, món mặn và bánh ngọt trên khay 3 tầng, phục vụ tại {venue.lounge} từ 14:00 đến 17:00.
               </p>
               <div className="mt-9 flex flex-wrap gap-3">
                 <Link href="#experiences" className={btn.gold}>
@@ -138,23 +138,23 @@ export default function Home() {
           <Reveal delay={0.1}>
             <p className={eyebrow}>Câu chuyện</p>
             <h2 className="mt-4 font-display text-4xl leading-tight sm:text-5xl">
-              Một nghi thức chậm rãi giữa thành phố vội vã
+              Trà chiều phong cách châu Âu tại {venue.name}
             </h2>
             <div className="mt-6 space-y-4 leading-relaxed text-muted">
               <p>
-                Mỗi buổi chiều, sảnh {venue.lounge} chuyển mình thành một phòng trà ấm cúng. Ánh nắng muộn xuyên qua
-                ô cửa vòm, tiếng dương cầm vang nhẹ và những tháp bánh ba tầng lần lượt được mang ra.
+                Afternoon Tea tại {venue.name} được phục vụ tại {venue.lounge} trong khung giờ 14:00 – 17:00. Mỗi set
+                là sự kết hợp giữa các loại trà, món mặn và bánh ngọt, được trình bày trên khay 3 tầng, đi kèm
+                Strawberry Jam, Cream và bộ ấm tách trà.
               </p>
               <p>
-                Đội ngũ bếp bánh chuẩn bị mọi thứ ngay trong ngày: scone nướng mỗi giờ, mứt nấu từ dâu Đà Lạt, sô-cô-la
-                Việt Nam và trà tuyển chọn từ những vườn trà cổ thụ phía Bắc.
+                Một buổi chiều để thưởng thức ẩm thực, thư giãn và gặp gỡ trong không gian sang trọng của khách sạn.
               </p>
             </div>
             <dl className="mt-10 grid grid-cols-3 gap-6 border-t border-line pt-8">
               {[
-                ["20+", "loại trà"],
-                ["11", "món mỗi tháp"],
-                ["100%", "làm trong ngày"],
+                ["3", "tầng khay bánh"],
+                ["14:00", "bắt đầu phục vụ"],
+                ["17:00", "kết thúc"],
               ].map(([n, l]) => (
                 <div key={l}>
                   <dt className="font-display text-4xl text-forest">{n}</dt>
@@ -196,10 +196,10 @@ export default function Home() {
         <Reveal className="flex flex-col justify-between gap-6 md:flex-row md:items-end">
           <div>
             <p className={eyebrow}>Không gian</p>
-            <h2 className="mt-4 font-display text-4xl sm:text-5xl">Sảnh trà cổ điển</h2>
+            <h2 className="mt-4 font-display text-4xl sm:text-5xl">{venue.lounge}</h2>
           </div>
           <p className="max-w-md text-muted">
-            Trần cao, đèn chùm pha lê và những bộ sofa nhung, nơi mỗi buổi trà chiều là một khoảnh khắc đáng nhớ.
+            Không gian sang trọng của khách sạn, nơi thư giãn và gặp gỡ trong một buổi chiều giữa trung tâm Quận 1.
           </p>
         </Reveal>
         <div className="mt-12 grid auto-rows-[180px] grid-cols-2 gap-4 md:auto-rows-[220px] md:grid-cols-4">

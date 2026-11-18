@@ -1,14 +1,14 @@
 // Thông tin venue: đổi tên, địa chỉ, giờ mở cửa... tại đây.
 export const venue = {
-  name: "Maison Lotus",
-  lounge: "The Lobby Lounge",
+  name: "Hilton Saigon",
+  lounge: "Me Linh Lounge",
   tagline: "Trà chiều giữa lòng Sài Gòn",
   description:
-    "Đặt chỗ Afternoon Tea tại Maison Lotus: bánh ngọt thủ công, trà tuyển chọn và không gian sảnh cổ điển giữa trung tâm Sài Gòn.",
-  address: "12 Đồng Khởi, Bến Nghé, Quận 1, TP. Hồ Chí Minh",
-  phone: "028 3822 0000",
-  email: "lounge@maisonlotus.vn",
-  hours: "14:00 – 17:30 hằng ngày",
+    "Afternoon Tea phong cách châu Âu tại Me Linh Lounge, Hilton Saigon: trà, món mặn và bánh ngọt trên khay 3 tầng, phục vụ từ 14:00 đến 17:00.",
+  address: "Công trường Mê Linh, Quận 1, Thành phố Hồ Chí Minh, Việt Nam",
+  phone: "+84 28 3823 7979",
+  email: "SGNHI_Hotel@Hilton.com",
+  hours: "14:00 – 17:00 hằng ngày",
   dressCode: "Smart casual",
   bookingWindowDays: 60,
   holdMinutes: 10,
