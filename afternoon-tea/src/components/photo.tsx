@@ -1,4 +1,5 @@
 import type { Tone } from "@/data/experiences";
+import { withBasePath } from "@/lib/base-path";
 import { cn } from "./ui";
 
 const tones: Record<Tone, string> = {
@@ -36,7 +37,7 @@ export function Photo({
     <div className={cn("relative overflow-hidden bg-linear-to-br", tones[tone], className)}>
       {src ? (
         // eslint-disable-next-line @next/next/no-img-element
-        <img src={src} alt={alt} className="absolute inset-0 h-full w-full object-cover" loading="lazy" />
+        <img src={withBasePath(src)} alt={alt} className="absolute inset-0 h-full w-full object-cover" loading="lazy" />
       ) : (
         <div role="img" aria-label={alt} className="grain absolute inset-0 flex items-center justify-center">
           <Illustration art={art} className={artClassName ?? "h-[46%] max-h-56 w-auto opacity-70"} />

@@ -13,14 +13,30 @@ Run all commands from `afternoon-tea/`.
 ```bash
 npm run dev      # dev server (http://localhost:3000)
 npm run build    # static export to out/; also type-checks
-npm run lint     # eslint (next core-web-vitals + typescript)
-npx tsc --noEmit # type-check only
+npm run lint      # eslint (next core-web-vitals + typescript)
+npm run typecheck # next typegen && tsc --noEmit
 ```
 
 There is no test suite.
 
-- **Route types:** `PageProps<"/route">` and `LayoutProps<"/">` are global types that Next generates. After you add or rename a route, `tsc` reports errors until `next dev` or `next build` regenerates them.
+- **Route types:** `PageProps<"/route">` and `LayoutProps<"/">` are global types that Next generates. Plain `tsc` fails on new routes until `next typegen` (included in `npm run typecheck`), `next dev` or `next build` regenerates them.
 - **One dev server only:** Next allows a single dev server per project. A second one exits and prints the PID of the running one. Running `next build` while the dev server is up rewrites `.next/` and can break the running server.
+
+## CI/CD
+
+`.github/workflows/ci-cd.yml` has three jobs:
+- `ci` runs `npm ci`, lint, typecheck and build in `afternoon-tea/` on every push and PR.
+- After `ci` passes, `deploy-preview` (same-repo PRs) or `deploy-production` (pushes to `master`) deploys to Vercel with a pinned Vercel CLI: `vercel pull` → `vercel build` → `vercel deploy --prebuilt`.
+- These run from the repo root, because the Vercel project's Root Directory is `afternoon-tea`.
+- They need the repo secrets `VERCEL_TOKEN`, `VERCEL_ORG_ID` and `VERCEL_PROJECT_ID`.
+
+`afternoon-tea/vercel.json` turns off Vercel's own Git auto-deploys, so the workflow is the only thing that deploys.
+
+**Base path (optional):** on Vercel the site is served at the domain root. For hosting under a sub-path, `next.config.ts` reads `basePath` from `NEXT_PUBLIC_BASE_PATH`.
+- `next/link` and `router.push` add the base path automatically.
+- Hand-written URLs to `public/` assets do not. Pass them through `withBasePath()` from `src/lib/base-path.ts`, as `Photo` does for `<img src>`.
+
+**Windows build:** a local Windows build writes the per-segment prefetch files (`__next.<segment>.__PAGE__.txt`) into nested folders, so prefetches 404. This is a Next.js path-separator bug that does not happen on Linux builds. Ignore it when testing `out/` locally.
 
 ## Next.js 16: read the bundled docs first
 
