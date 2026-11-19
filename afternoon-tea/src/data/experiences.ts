@@ -87,7 +87,6 @@ export const experiences: Experience[] = [
     capacityPerSlot: 8,
     badge: "Premium",
     tone: "gold",
-    // TODO: hiện đang trùng ảnh với Classic (2 file gửi lên giống hệt nhau)
     image: "/images/european-premium.jpg",
     highlights: [
       "Welcome drink",
