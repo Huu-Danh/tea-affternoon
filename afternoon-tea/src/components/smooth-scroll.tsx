@@ -19,7 +19,8 @@ export function SmoothScroll() {
 
   useEffect(() => {
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-    const lenis = new Lenis({ autoRaf: true, lerp: 0.085, anchors: { offset: -96 } });
+    // Khoảng chừa cho header lấy từ `scroll-padding-top` (globals.css); Lenis tự trừ giá trị này
+    const lenis = new Lenis({ autoRaf: true, lerp: 0.085, anchors: true });
     instance = lenis;
     return () => {
       lenis.destroy();
@@ -27,16 +28,19 @@ export function SmoothScroll() {
     };
   }, []);
 
-  // Chuyển trang: đồng bộ vị trí cuộn của Lenis (lên đầu, hoặc tới #hash nếu có)
+  // Chuyển trang: tính lại kích thước trang mới (nếu không Lenis vẫn giới hạn cuộn theo
+  // chiều cao trang cũ), rồi đưa về đầu trang hoặc tới #hash nếu có
   useEffect(() => {
     const lenis = instance;
     if (!lenis) return;
-    const hash = window.location.hash;
-    const target = hash ? document.querySelector(hash) : null;
-    requestAnimationFrame(() => {
-      if (target) lenis.scrollTo(target as HTMLElement, { offset: -96, immediate: true });
+    const id = requestAnimationFrame(() => {
+      lenis.resize();
+      const hash = window.location.hash;
+      const target = hash ? document.getElementById(decodeURIComponent(hash.slice(1))) : null;
+      if (target) lenis.scrollTo(target, { immediate: true });
       else lenis.scrollTo(0, { immediate: true });
     });
+    return () => cancelAnimationFrame(id);
   }, [pathname]);
 
   return null;

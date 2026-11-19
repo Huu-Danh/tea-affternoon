@@ -72,11 +72,31 @@ There is no test suite.
 
 **Page pattern:** for client pages, `page.tsx` is a server component that exports `metadata` and renders a `"use client"` `*-view.tsx` component.
 
-**Styling:**
-- Tailwind v4 design tokens (colors `forest`, `gold`, `cream`, `ink` and others; fonts `font-display` and `font-sans`) are defined in `@theme` in `src/app/globals.css`.
-- Use v4 class names, e.g. `bg-linear-to-*`, not `bg-gradient-to-*`.
-- Shared class strings (`btn.*`, `input`, `eyebrow`) and `cn()` live in `src/components/ui.ts`.
-- No component library is used.
+**Styling (luxury look):**
+- Tailwind v4 design tokens are defined in `@theme` in `src/app/globals.css`:
+  - Colors: Hilton navy `navy`/`navy-dark`, ivory `cream`/`paper`/`sand`, champagne `gold`/`gold-soft`, plus `ink`, `muted` and `line`. There is no `forest` color any more.
+  - Fonts: `font-display` (Cormorant), `font-sans` (Be Vietnam Pro) and `font-script` (Pinyon Script, used for short English accents such as "Afternoon Tea").
+  - `.lattice` is the gold diamond pattern used on navy sections.
+- Corners are sharp. Containers use `rounded-sm` or `rounded-xs`, and `rounded-full` is kept only for circles.
+- Buttons in `btn.*` are uppercase with wide tracking. Shared class strings and `cn()` live in `src/components/ui.ts`.
+- Use v4 class names, e.g. `bg-linear-to-*`, not `bg-gradient-to-*`. No component library is used.
+- Because of CSS `uppercase`, `innerText` on buttons returns upper case. Match on `textContent` in tests.
+
+**Motion and layout pieces:**
+- `Intro` (in `layout.tsx`) is a pure-CSS splash: classes `.intro*` in `globals.css`. It shows only on full page loads.
+- `SiteHeader` is transparent with the white logo over the home hero. It turns solid after 40px of scroll, using `useSyncExternalStore` on scroll. The home hero uses `-mt-16 lg:-mt-20` to slide under the header.
+- `SmoothScroll` runs Lenis in `components/smooth-scroll.tsx`:
+  - The header offset for anchors comes from CSS `scroll-padding-top`, and Lenis subtracts it itself. Do not also pass an `offset`.
+  - On every pathname change it calls `lenis.resize()` before scrolling. Without that, Lenis keeps the previous page's scroll limit and `/#hash` links from other pages stop short.
+  - `getLenis()?.stop()/start()` locks scrolling, e.g. in the gallery lightbox.
+- `Reveal` fades content in. `RevealMask` reveals images with a clip-path. In `RevealMask` the in-view observer must sit on an unclipped outer element: a fully clipped element that is already on screen at load never reports as in view.
+- `Photo` has a `kenBurns` prop for a slow zoom. `Ornament` (in `photo.tsx`) is the gold divider.
+- `Gallery` (`components/gallery.tsx`) opens a lightbox for items that have a `src`.
+
+**Media assets:**
+- Images are WebP. `public/images/*.webp` and `public/logo*.webp` were made from the jpg/png originals with sharp at quality 82–85.
+- The mp3s in `public/music/` (`clair-de-lune`, `european-classic`, `european-premium`) were loudness-normalized to -16 LUFS (ffmpeg `loudnorm`, two passes) and re-encoded at 128 kbps. Because of that, a single `venue.music.volume` fits all tracks.
+- Process new media the same way. The originals are still in `public/` but are not referenced.
 
 **Images:**
 - `Photo` (`src/components/photo.tsx`) shows `src` when it is set. Otherwise it draws a gradient by `tone` plus an SVG line illustration (`art`: cup, stand or pot).

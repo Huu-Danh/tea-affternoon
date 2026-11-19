@@ -81,7 +81,14 @@ function SectionTitle({
   return (
     <Reveal className={cn("max-w-2xl", align === "center" && "mx-auto text-center")}>
       <p className={cn("font-script text-4xl leading-none sm:text-5xl", light ? "text-gold-soft" : "text-gold")}>{script}</p>
-      <h2 className="mt-3 font-display text-4xl font-light tracking-tight sm:text-5xl lg:text-6xl">{title}</h2>
+      <h2
+        className={cn(
+          "mt-3 font-display text-4xl font-light tracking-tight text-balance sm:text-5xl",
+          align === "center" && "lg:text-6xl",
+        )}
+      >
+        {title}
+      </h2>
       <Ornament className={cn("mt-6", align === "center" && "mx-auto", light ? "text-gold-soft/70" : "text-gold")} />
       {text && <p className={cn("mt-6 leading-relaxed", light ? "text-cream/70" : "text-muted")}>{text}</p>}
     </Reveal>
@@ -99,33 +106,33 @@ export default function Home() {
           art="stand"
           kenBurns
           className="h-svh min-h-[640px]"
-          artClassName="h-[78%] w-auto opacity-[0.09]"
+          artClassName="h-[78%] w-auto opacity-[0.06]"
         >
           <div className="lattice absolute inset-0" />
           <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_30%,rgba(10,16,30,0.75)_100%)]" />
-          {/* Khung viền vàng mảnh */}
-          <div className="pointer-events-none absolute inset-3 border border-gold-soft/25 sm:inset-6 lg:inset-8" />
-          <div className="pointer-events-none absolute inset-4 border border-gold-soft/10 sm:inset-7 lg:inset-9" />
+          {/* Khung viền vàng mảnh, bắt đầu dưới header để không cắt qua logo */}
+          <div className="pointer-events-none absolute inset-x-3 top-[4.5rem] bottom-3 border border-gold-soft/25 sm:inset-x-6 sm:bottom-6 lg:inset-x-8 lg:top-24 lg:bottom-8" />
+          <div className="pointer-events-none absolute inset-x-4 top-[4.75rem] bottom-4 border border-gold-soft/10 sm:inset-x-7 sm:bottom-7 lg:inset-x-9 lg:top-[6.25rem] lg:bottom-9" />
 
           <div className="absolute inset-0 flex flex-col items-center justify-center px-6 pt-16 text-center text-cream">
             <p className={cn(eyebrow, "animate-fade-up text-gold-soft")} style={{ animationDelay: "0.2s" }}>
               {venue.name} · {venue.lounge}
             </p>
             <p
-              className="mt-6 animate-fade-up font-script text-7xl leading-none text-gold-soft sm:text-8xl lg:text-[9.5rem]"
+              className="mt-6 animate-fade-up font-script text-6xl leading-none text-gold-soft sm:text-8xl lg:text-[9.5rem]"
               style={{ animationDelay: "0.35s" }}
             >
               Afternoon Tea
             </p>
             <h1
-              className="mt-4 animate-fade-up font-display text-3xl font-light tracking-wide sm:text-4xl lg:text-5xl"
+              className="mt-4 animate-fade-up font-display text-3xl font-light tracking-wide text-balance sm:text-4xl lg:text-5xl"
               style={{ animationDelay: "0.5s" }}
             >
               {venue.tagline}
             </h1>
             <Ornament className="mt-7 animate-fade-up text-gold-soft/70" />
             <p
-              className="mt-7 max-w-xl animate-fade-up text-sm leading-relaxed text-cream/75 sm:text-base"
+              className="mt-7 max-w-2xl animate-fade-up text-sm leading-relaxed text-balance text-cream/75 sm:text-base"
               style={{ animationDelay: "0.65s" }}
             >
               Trà, món mặn và bánh ngọt trên khay 3 tầng · Phục vụ 14:00 – 17:00 hằng ngày
@@ -142,7 +149,7 @@ export default function Home() {
 
           <a
             href="#info"
-            className="absolute bottom-10 left-1/2 flex -translate-x-1/2 flex-col items-center gap-3 text-[10px] tracking-[0.3em] text-cream/60 uppercase transition hover:text-cream"
+            className="absolute bottom-10 left-1/2 hidden -translate-x-1/2 flex-col items-center gap-3 text-[10px] tracking-[0.3em] text-cream/60 uppercase transition hover:text-cream sm:flex"
           >
             Khám phá
             <span className="relative h-12 w-px overflow-hidden bg-cream/20">
