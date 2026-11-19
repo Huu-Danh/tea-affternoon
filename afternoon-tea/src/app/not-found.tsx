@@ -1,5 +1,9 @@
+"use client";
+
 import { EmptyState } from "@/components/checkout-parts";
+import { useT } from "@/i18n/use-lang";
 
 export default function NotFound() {
-  return <EmptyState title="Không tìm thấy trang" text="Trang bạn tìm không tồn tại hoặc đã được di chuyển." />;
+  const { t } = useT();
+  return <EmptyState title={t.notFound.title} text={t.notFound.text} />;
 }

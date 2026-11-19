@@ -1,5 +1,6 @@
 "use client";
 
+import { useMemo } from "react";
 import { useRouter } from "next/navigation";
 import { useForm, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -8,59 +9,71 @@ import { ArrowRight, Sparkles } from "lucide-react";
 import {
   CheckoutSteps,
   EmptyState,
+  Field,
   HoldExpired,
   HoldTimer,
   OrderSummary,
+  PageSkeleton,
   useHoldRemaining,
 } from "@/components/checkout-parts";
 import { Stepper } from "@/components/stepper";
 import { btn, cn, input } from "@/components/ui";
-import { addonsFor, getExperience, occasions, type Experience } from "@/data/experiences";
+import { addonsFor, getExperience, occasionKeys, type Experience } from "@/data/experiences";
+import { localePath, tr } from "@/i18n/config";
+import type { Dict } from "@/i18n/dict";
+import { useT } from "@/i18n/use-lang";
 import { formatLongDate, formatVnd } from "@/lib/format";
 import { useBooking, useHydrated, type Draft } from "@/lib/store";
 
-const schema = z.object({
-  fullName: z.string().trim().min(2, "Vui lòng nhập họ và tên"),
-  phone: z
-    .string()
-    .trim()
-    .refine((v) => /^(0|\+84)[35789]\d{8}$/.test(v.replace(/[\s.-]/g, "")), "Số điện thoại không hợp lệ"),
-  email: z.string().trim().pipe(z.email("Email không hợp lệ")),
-  occasion: z.string(),
-  note: z.string().max(300, "Tối đa 300 ký tự"),
-  cardMessage: z.string().max(200, "Tối đa 200 ký tự"),
-  marketing: z.boolean(),
-  agree: z.boolean().refine((v) => v, "Vui lòng đồng ý với điều khoản đặt chỗ"),
-});
+const phoneOk = (v: string) => /^(0|\+84)[35789]\d{8}$/.test(v.replace(/[\s.-]/g, "")) || /^\+\d{8,15}$/.test(v.replace(/[\s.-]/g, ""));
 
-type FormValues = z.infer<typeof schema>;
+function makeSchema(t: Dict) {
+  return z.object({
+    fullName: z.string().trim().min(2, t.checkout.errName),
+    phone: z.string().trim().refine(phoneOk, t.checkout.errPhone),
+    email: z.string().trim().pipe(z.email(t.checkout.errEmail)),
+    occasion: z.string(),
+    note: z.string().max(300, t.checkout.errMax(300)),
+    cardMessage: z.string().max(200, t.checkout.errMax(200)),
+    marketing: z.boolean(),
+    agree: z.boolean().refine((v) => v, t.checkout.errAgree),
+  });
+}
+
+type FormValues = z.infer<ReturnType<typeof makeSchema>>;
 
 export function CheckoutView() {
+  const { t } = useT();
   const hydrated = useHydrated();
   const draft = useBooking((s) => s.draft);
 
   if (!hydrated) return <PageSkeleton />;
   const exp = draft ? getExperience(draft.slug) : undefined;
-  if (!draft || !exp) {
-    return <EmptyState title="Chưa có đặt chỗ" text="Hãy chọn một gói trà chiều và khung giờ trước khi thanh toán." />;
-  }
+  if (!draft || !exp) return <EmptyState title={t.checkout.emptyTitle} text={t.checkout.emptyText} />;
   return <CheckoutForm draft={draft} exp={exp} />;
 }
 
-export function PageSkeleton() {
-  return (
-    <div className="mx-auto grid max-w-6xl animate-pulse gap-10 px-4 py-12 lg:grid-cols-[1fr_380px]" aria-hidden>
-      <div className="h-[600px] rounded-sm bg-sand" />
-      <div className="h-96 rounded-sm bg-sand" />
-    </div>
-  );
+/** Dữ liệu cũ lưu nhãn tiếng Việt cho dịp đặc biệt: quy về khoá */
+function occasionKeyOf(v?: string) {
+  if (!v) return "none";
+  if ((occasionKeys as readonly string[]).includes(v)) return v;
+  const legacy: Record<string, string> = {
+    "Không có": "none",
+    "Sinh nhật": "birthday",
+    "Kỷ niệm": "anniversary",
+    "Hẹn hò": "date",
+    "Gặp gỡ công việc": "business",
+  };
+  return legacy[v] ?? "other";
 }
 
 function CheckoutForm({ draft, exp }: { draft: Draft; exp: Experience }) {
+  const { lang, t } = useT();
   const router = useRouter();
   const setGuest = useBooking((s) => s.setGuest);
   const setAddonQty = useBooking((s) => s.setAddonQty);
   const remaining = useHoldRemaining(draft.holdExpiresAt);
+  const schema = useMemo(() => makeSchema(t), [t]);
 
   const {
     register,
@@ -73,7 +86,7 @@ function CheckoutForm({ draft, exp }: { draft: Draft; exp: Experience }) {
       fullName: draft.guest?.fullName ?? "",
       phone: draft.guest?.phone ?? "",
       email: draft.guest?.email ?? "",
-      occasion: draft.guest?.occasion ?? occasions[0],
+      occasion: occasionKeyOf(draft.guest?.occasion),
       note: draft.guest?.note ?? "",
       cardMessage: draft.guest?.cardMessage ?? "",
       marketing: draft.guest?.marketing ?? false,
@@ -81,8 +94,8 @@ function CheckoutForm({ draft, exp }: { draft: Draft; exp: Experience }) {
     },
   });
 
-  const occasion = useWatch({ control, name: "occasion" });
-  const hasOccasion = occasion !== occasions[0];
+  const occasion = useWatch({ control, name: "occasion" }) as keyof Dict["occasions"];
+  const hasOccasion = occasion !== "none";
 
   if (remaining === 0) return <HoldExpired slug={exp.slug} />;
 
@@ -96,7 +109,7 @@ function CheckoutForm({ draft, exp }: { draft: Draft; exp: Experience }) {
       marketing: v.marketing,
       cardMessage: exp.perks?.greetingCard ? v.cardMessage.trim() : undefined,
     });
-    router.push("/payment/");
+    router.push(localePath(lang, "/payment/"));
   };
 
   return (
@@ -105,9 +118,9 @@ function CheckoutForm({ draft, exp }: { draft: Draft; exp: Experience }) {
       <div className="mt-10 grid gap-10 lg:grid-cols-[1fr_380px]">
         <form onSubmit={handleSubmit(onSubmit)} noValidate className="min-w-0 space-y-10">
           <div>
-            <h1 className="font-display text-4xl sm:text-5xl">Thông tin đặt chỗ</h1>
+            <h1 className="font-display text-4xl font-light sm:text-5xl">{t.checkout.title}</h1>
             <p className="mt-2 text-muted">
-              {exp.name} · {formatLongDate(draft.date)} · {draft.time} · {draft.pax} khách
+              {exp.name} · {formatLongDate(draft.date, lang)} · {draft.time} · {t.common.guests(draft.pax)}
             </p>
             <div className="mt-6">
               <HoldTimer seconds={remaining} />
@@ -115,71 +128,74 @@ function CheckoutForm({ draft, exp }: { draft: Draft; exp: Experience }) {
           </div>
 
           <fieldset className="space-y-5">
-            <legend className="mb-5 font-display text-2xl">Liên hệ</legend>
-            <Field label="Họ và tên" error={errors.fullName?.message} id="fullName">
+            <legend className="mb-5 font-display text-2xl">{t.checkout.contact}</legend>
+            <Field label={t.checkout.fullName} error={errors.fullName?.message} id="fullName">
               <input id="fullName" autoComplete="name" className={input} aria-invalid={!!errors.fullName} {...register("fullName")} />
             </Field>
             <div className="grid gap-5 sm:grid-cols-2">
-              <Field label="Số điện thoại" error={errors.phone?.message} id="phone">
+              <Field label={t.checkout.phone} error={errors.phone?.message} id="phone">
                 <input
                   id="phone"
                   type="tel"
                   inputMode="tel"
                   autoComplete="tel"
-                  placeholder="09xx xxx xxx"
+                  placeholder={lang === "en" ? "+84 9xx xxx xxx" : "09xx xxx xxx"}
                   className={input}
                   aria-invalid={!!errors.phone}
                   {...register("phone")}
                 />
               </Field>
-              <Field label="Email" error={errors.email?.message} id="email">
+              <Field label={t.checkout.email} error={errors.email?.message} id="email">
                 <input
                   id="email"
                   type="email"
                   autoComplete="email"
-                  placeholder="ban@email.com"
+                  placeholder="you@email.com"
                   className={input}
                   aria-invalid={!!errors.email}
                   {...register("email")}
                 />
               </Field>
             </div>
-            <Field label="Dịp đặc biệt" id="occasion">
+            <Field label={t.checkout.occasion} id="occasion">
               <select id="occasion" className={input} {...register("occasion")}>
-                {occasions.map((o) => (
-                  <option key={o}>{o}</option>
+                {occasionKeys.map((k) => (
+                  <option key={k} value={k}>
+                    {t.occasions[k]}
+                  </option>
                 ))}
               </select>
             </Field>
             {exp.perks?.tableDecor && hasOccasion && (
               <p className="flex gap-3 rounded-sm bg-gold/10 p-4 text-sm text-ink/80">
                 <Sparkles className="mt-0.5 size-4 shrink-0 text-gold" />
-                Gói {exp.name} bao gồm trang trí bàn cho dịp {occasion.toLowerCase()} của bạn.
+                {t.checkout.decorNote(exp.name, t.occasions[occasion].toLowerCase())}
               </p>
             )}
             {exp.perks?.greetingCard && (
-              <Field label="Lời chúc trên thiệp chúc mừng (tuỳ chọn)" error={errors.cardMessage?.message} id="cardMessage">
+              <Field label={t.checkout.cardMessage} error={errors.cardMessage?.message} id="cardMessage">
                 <textarea
                   id="cardMessage"
                   rows={2}
-                  placeholder="Ví dụ: Chúc mừng sinh nhật mẹ!"
+                  placeholder={t.checkout.cardPlaceholder}
                   className={cn(input, "resize-none")}
                   aria-invalid={!!errors.cardMessage}
                   {...register("cardMessage")}
                 />
               </Field>
             )}
-            <Field label="Ghi chú (dị ứng, yêu cầu chỗ ngồi...)" error={errors.note?.message} id="note">
+            <Field label={t.checkout.note} error={errors.note?.message} id="note">
               <textarea id="note" rows={3} className={cn(input, "resize-none")} aria-invalid={!!errors.note} {...register("note")} />
             </Field>
           </fieldset>
 
           <fieldset>
-            <legend className="font-display text-2xl">Thêm trải nghiệm</legend>
-            <p className="mt-1 text-sm text-muted">Tuỳ chọn, giúp buổi chiều thêm trọn vẹn.</p>
+            <legend className="font-display text-2xl">{t.checkout.addonsTitle}</legend>
+            <p className="mt-1 text-sm text-muted">{t.checkout.addonsText}</p>
             <div className="mt-5 grid gap-3">
               {addonsFor(exp.slug).map((a) => {
                 const qty = draft.addons[a.id] ?? 0;
+                const name = tr(a.name, lang);
                 return (
                   <div
                     key={a.id}
@@ -189,18 +205,11 @@ function CheckoutForm({ draft, exp }: { draft: Draft; exp: Experience }) {
                     )}
                   >
                     <div className="min-w-0">
-                      <p className="font-medium">{a.name}</p>
-                      <p className="text-sm text-muted">{a.description}</p>
-                      <p className="mt-1 text-sm text-navy">{formatVnd(a.price)}</p>
+                      <p className="font-medium">{name}</p>
+                      <p className="text-sm text-muted">{tr(a.description, lang)}</p>
+                      <p className="mt-1 text-sm text-navy">{formatVnd(a.price, lang)}</p>
                     </div>
-                    <Stepper
-                      size="sm"
-                      value={qty}
-                      min={0}
-                      max={a.maxQty}
-                      onChange={(n) => setAddonQty(a.id, n)}
-                      label={a.name}
-                    />
+                    <Stepper size="sm" value={qty} min={0} max={a.maxQty} onChange={(n) => setAddonQty(a.id, n)} label={name} />
                   </div>
                 );
               })}
@@ -211,18 +220,18 @@ function CheckoutForm({ draft, exp }: { draft: Draft; exp: Experience }) {
             <label className="flex cursor-pointer gap-3">
               <input type="checkbox" className="mt-0.5 size-4 accent-navy" {...register("agree")} />
               <span>
-                Tôi đồng ý với điều khoản đặt chỗ và chính sách huỷ (miễn phí huỷ trước 24 giờ).
+                {t.checkout.agree}
                 {errors.agree && <span className="mt-1 block text-danger">{errors.agree.message}</span>}
               </span>
             </label>
             <label className="flex cursor-pointer gap-3 text-muted">
               <input type="checkbox" className="mt-0.5 size-4 accent-navy" {...register("marketing")} />
-              Nhận thông tin ưu đãi qua email.
+              {t.checkout.marketing}
             </label>
           </div>
 
-          <button type="submit" disabled={isSubmitting} className={cn(btn.primary, "w-full py-4 text-[15px] sm:w-auto sm:px-10")}>
-            Tiếp tục thanh toán
+          <button type="submit" disabled={isSubmitting} className={cn(btn.primary, "w-full py-4 sm:w-auto sm:px-10")}>
+            {t.checkout.submit}
             <ArrowRight className="size-4" />
           </button>
         </form>
@@ -231,32 +240,6 @@ function CheckoutForm({ draft, exp }: { draft: Draft; exp: Experience }) {
           <OrderSummary exp={exp} date={draft.date} time={draft.time} pax={draft.pax} addons={draft.addons} />
         </div>
       </div>
-    </div>
-  );
-}
-
-function Field({
-  label,
-  error,
-  id,
-  children,
-}: {
-  label: string;
-  error?: string;
-  id: string;
-  children: React.ReactNode;
-}) {
-  return (
-    <div>
-      <label htmlFor={id} className="mb-1.5 block text-sm font-medium">
-        {label}
-      </label>
-      {children}
-      {error && (
-        <p className="mt-1.5 text-sm text-danger" role="alert">
-          {error}
-        </p>
-      )}
     </div>
   );
 }

@@ -1,7 +1,10 @@
-import type { Metadata } from "next";
-import { PaymentView } from "./payment-view";
+import { dict } from "@/i18n/dict";
+import { pageMeta } from "@/i18n/meta";
+import { PaymentView } from "@/views/payment-view";
 
-export const metadata: Metadata = { title: "Thanh toán", robots: { index: false } };
+const t = dict.vi;
+
+export const metadata = pageMeta("vi", "/payment/", t.payment.title, { noindex: true });
 
 export default function PaymentPage() {
   return <PaymentView />;

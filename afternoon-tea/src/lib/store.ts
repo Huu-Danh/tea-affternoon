@@ -44,23 +44,60 @@ export type Booking = {
   createdAt: number;
 };
 
+export type Voucher = {
+  code: string;
+  slug: string;
+  experienceName: string;
+  pax: number;
+  recipientName: string;
+  recipientEmail?: string;
+  message: string;
+  senderName: string;
+  senderEmail: string;
+  senderPhone: string;
+  deliverTo: "recipient" | "me";
+  total: number;
+  paymentMethod: PaymentMethod;
+  createdAt: number;
+  expiresAt: number;
+};
+
+export type Inquiry = {
+  ref: string;
+  name: string;
+  company: string;
+  phone: string;
+  email: string;
+  eventType: string;
+  date: string;
+  time: string;
+  guests: number;
+  pkg: string;
+  message: string;
+  createdAt: number;
+};
+
 type State = {
   draft: Draft | null;
   bookings: Booking[];
   lastCode: string | null;
+  vouchers: Voucher[];
+  inquiries: Inquiry[];
   startHold: (d: Pick<Draft, "slug" | "date" | "time" | "pax">) => void;
   setAddonQty: (id: string, qty: number) => void;
   setGuest: (g: Guest) => void;
   clearDraft: () => void;
   confirm: (b: Omit<Booking, "code" | "createdAt" | "status">) => string;
   cancel: (code: string) => void;
+  addVoucher: (v: Omit<Voucher, "code" | "createdAt" | "expiresAt">) => Voucher;
+  addInquiry: (i: Omit<Inquiry, "ref" | "createdAt">) => Inquiry;
 };
 
-function makeCode() {
+function makeCode(prefix = "AT") {
   const chars = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
   let s = "";
   for (let i = 0; i < 6; i++) s += chars[Math.floor(Math.random() * chars.length)];
-  return `AT-${s}`;
+  return `${prefix}-${s}`;
 }
 
 /**
@@ -73,6 +110,8 @@ export const useBooking = create<State>()(
       draft: null,
       bookings: [],
       lastCode: null,
+      vouchers: [],
+      inquiries: [],
       startHold: (d) =>
         set({
           draft: {
@@ -106,6 +145,21 @@ export const useBooking = create<State>()(
         set({
           bookings: get().bookings.map((b) => (b.code === code ? { ...b, status: "cancelled" } : b)),
         }),
+      // Khi nối backend: POST /vouchers (sau khi thanh toán thành công)
+      addVoucher: (v) => {
+        const now = new Date();
+        const expires = new Date(now);
+        expires.setMonth(expires.getMonth() + venue.voucherValidityMonths);
+        const voucher: Voucher = { ...v, code: makeCode("GV"), createdAt: now.getTime(), expiresAt: expires.getTime() };
+        set({ vouchers: [voucher, ...get().vouchers] });
+        return voucher;
+      },
+      // Khi nối backend: POST /event-inquiries (hoặc gửi qua email/CRM)
+      addInquiry: (i) => {
+        const inquiry: Inquiry = { ...i, ref: makeCode("EV"), createdAt: Date.now() };
+        set({ inquiries: [inquiry, ...get().inquiries] });
+        return inquiry;
+      },
     }),
     { name: "afternoon-tea-booking", storage: createJSONStorage(() => localStorage) },
   ),

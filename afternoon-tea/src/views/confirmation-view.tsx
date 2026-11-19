@@ -4,23 +4,23 @@ import Link from "next/link";
 import { motion } from "motion/react";
 import { CalendarPlus, Check } from "lucide-react";
 import { BookingDetails } from "@/components/booking-details";
-import { CheckoutSteps, EmptyState } from "@/components/checkout-parts";
+import { CheckoutSteps, EmptyState, PageSkeleton } from "@/components/checkout-parts";
 import { btn, cn } from "@/components/ui";
 import { getExperience } from "@/data/experiences";
 import { venue } from "@/data/venue";
+import { localePath, tr } from "@/i18n/config";
+import { useT } from "@/i18n/use-lang";
 import { downloadIcs } from "@/lib/ics";
 import { useBooking, useHydrated } from "@/lib/store";
-import { PageSkeleton } from "../checkout/checkout-view";
 
 export function ConfirmationView() {
+  const { lang, t } = useT();
   const hydrated = useHydrated();
   const lastCode = useBooking((s) => s.lastCode);
   const booking = useBooking((s) => s.bookings.find((b) => b.code === s.lastCode));
 
   if (!hydrated) return <PageSkeleton />;
-  if (!lastCode || !booking) {
-    return <EmptyState title="Không tìm thấy đặt chỗ" text="Có thể bạn đã mở trang này trên một trình duyệt khác." />;
-  }
+  if (!lastCode || !booking) return <EmptyState title={t.confirmation.notFoundTitle} text={t.confirmation.notFoundText} />;
   const exp = getExperience(booking.slug);
 
   return (
@@ -38,18 +38,17 @@ export function ConfirmationView() {
         >
           <Check className="size-9" strokeWidth={1.6} />
         </motion.div>
-        <h1 className="mt-8 font-display text-5xl">Hẹn gặp bạn!</h1>
-        <p className="mt-3 text-muted">
-          Đặt chỗ đã được xác nhận. Email xác nhận đã được gửi tới {booking.guest.email} (giả lập).
-        </p>
-        <p className="mt-8 text-[11px] uppercase tracking-[0.3em] text-muted">Mã đặt chỗ</p>
+        <p className="mt-8 font-script text-4xl text-gold">Thank you</p>
+        <h1 className="mt-1 font-display text-5xl font-light">{t.confirmation.title}</h1>
+        <p className="mt-3 text-muted">{t.confirmation.text(booking.guest.email)}</p>
+        <p className="mt-8 text-[11px] tracking-[0.3em] text-muted uppercase">{t.confirmation.code}</p>
         <p className="mt-2 font-display text-4xl tracking-[0.15em] text-navy">{booking.code}</p>
       </div>
 
       <div className="mt-10 rounded-sm border border-line bg-paper p-6 sm:p-8">
         <BookingDetails b={booking} />
         <p className="mt-6 border-t border-line pt-5 text-sm text-muted">
-          {venue.lounge}, {venue.name} · {venue.address}
+          {venue.lounge}, {venue.name} · {tr(venue.address, lang)}
         </p>
       </div>
 
@@ -64,17 +63,18 @@ export function ConfirmationView() {
               date: booking.date,
               time: booking.time,
               minutes: exp?.durationMinutes ?? 120,
+              lang,
             })
           }
         >
           <CalendarPlus className="size-4" />
-          Thêm vào lịch
+          {t.confirmation.addCalendar}
         </button>
-        <Link href="/my-bookings/" className={btn.outline}>
-          Xem đặt chỗ của tôi
+        <Link href={localePath(lang, "/my-bookings/")} className={btn.outline}>
+          {t.confirmation.myBookings}
         </Link>
-        <Link href="/" className={cn(btn.ghost, "sm:px-6")}>
-          Về trang chủ
+        <Link href={localePath(lang, "/")} className={cn(btn.ghost, "sm:px-6")}>
+          {t.common.backHome}
         </Link>
       </div>
     </div>

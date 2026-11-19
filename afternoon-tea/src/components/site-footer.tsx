@@ -1,9 +1,21 @@
+"use client";
+
 import Link from "next/link";
 import { venue } from "@/data/venue";
+import { localePath, tr } from "@/i18n/config";
+import { useT } from "@/i18n/use-lang";
 import { withBasePath } from "@/lib/base-path";
 import { Ornament } from "./photo";
 
 export function SiteFooter() {
+  const { lang, t } = useT();
+  const links = [
+    { href: "/#experiences", label: t.nav.experiences },
+    { href: "/gift-voucher/", label: t.nav.gift },
+    { href: "/private-events/", label: t.nav.events },
+    { href: "/#faq", label: t.footer.faq },
+    { href: "/my-bookings/", label: t.nav.myBookings },
+  ];
   return (
     <footer className="lattice bg-navy-dark text-cream/75">
       <div className="mx-auto max-w-7xl px-4 pt-20 pb-12 sm:px-6 lg:px-8">
@@ -17,15 +29,15 @@ export function SiteFooter() {
 
         <div className="mt-14 grid gap-10 text-center text-sm md:grid-cols-3">
           <div>
-            <p className="text-[10px] tracking-[0.3em] text-gold-soft uppercase">Địa chỉ</p>
-            <p className="mt-3 leading-relaxed">{venue.address}</p>
+            <p className="text-[10px] tracking-[0.3em] text-gold-soft uppercase">{t.footer.address}</p>
+            <p className="mt-3 leading-relaxed">{tr(venue.address, lang)}</p>
           </div>
           <div>
-            <p className="text-[10px] tracking-[0.3em] text-gold-soft uppercase">Giờ phục vụ</p>
-            <p className="mt-3">{venue.hours}</p>
+            <p className="text-[10px] tracking-[0.3em] text-gold-soft uppercase">{t.footer.hours}</p>
+            <p className="mt-3">{tr(venue.hours, lang)}</p>
           </div>
           <div>
-            <p className="text-[10px] tracking-[0.3em] text-gold-soft uppercase">Liên hệ</p>
+            <p className="text-[10px] tracking-[0.3em] text-gold-soft uppercase">{t.footer.contact}</p>
             <p className="mt-3">
               <a href={`tel:${venue.phone.replace(/\s/g, "")}`} className="transition hover:text-gold-soft">
                 {venue.phone}
@@ -39,17 +51,25 @@ export function SiteFooter() {
           </div>
         </div>
 
-        <div className="mt-14 text-center">
+        <nav className="mt-12 flex flex-wrap justify-center gap-x-8 gap-y-3 text-[11px] tracking-[0.2em] uppercase" aria-label="Footer">
+          {links.map((l) => (
+            <Link key={l.href} href={localePath(lang, l.href)} className="text-cream/60 transition hover:text-gold-soft">
+              {l.label}
+            </Link>
+          ))}
+        </nav>
+
+        <div className="mt-12 text-center">
           <Link
-            href="/#experiences"
+            href={localePath(lang, "/#experiences")}
             className="inline-flex border border-gold-soft/40 px-8 py-3.5 text-[11px] tracking-[0.25em] text-cream uppercase transition hover:border-gold-soft hover:bg-cream/5"
           >
-            Đặt chỗ trà chiều
+            {t.footer.book}
           </Link>
         </div>
       </div>
       <div className="border-t border-cream/10 py-6 text-center text-[11px] text-cream/35">
-        © {new Date().getFullYear()} {venue.name} · Bản demo frontend: dữ liệu và thanh toán đều là giả lập.
+        © {new Date().getFullYear()} {venue.name} · {t.common.demoNote}
       </div>
     </footer>
   );

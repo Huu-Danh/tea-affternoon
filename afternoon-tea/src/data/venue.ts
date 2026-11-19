@@ -1,19 +1,23 @@
 // Thông tin venue: đổi tên, địa chỉ, giờ mở cửa... tại đây.
+// Trường có { vi, en } là chuỗi song ngữ, lấy bằng tr(field, lang).
 export const venue = {
   name: "Hilton Saigon",
   lounge: "Me Linh Lounge",
-  tagline: "Trà chiều giữa lòng Sài Gòn",
-  description:
-    "Afternoon Tea phong cách châu Âu tại Me Linh Lounge, Hilton Saigon: trà, món mặn và bánh ngọt trên khay 3 tầng, phục vụ từ 14:00 đến 17:00.",
-  address: "Công trường Mê Linh, Quận 1, Thành phố Hồ Chí Minh, Việt Nam",
+  tagline: { vi: "Trà chiều giữa lòng Sài Gòn", en: "Afternoon tea in the heart of Saigon" },
+  address: {
+    vi: "Công trường Mê Linh, Quận 1, Thành phố Hồ Chí Minh, Việt Nam",
+    en: "Me Linh Square, District 1, Ho Chi Minh City, Vietnam",
+  },
   phone: "+84 28 3823 7979",
   email: "SGNHI_Hotel@Hilton.com",
-  hours: "14:00 – 17:00 hằng ngày",
-  dressCode: "Smart casual",
+  hours: { vi: "14:00 – 17:00 hằng ngày", en: "Daily, 2:00 – 5:00 PM" },
+  dressCode: { vi: "Smart casual", en: "Smart casual" },
   bookingWindowDays: 60,
   holdMinutes: 10,
   serviceChargeRate: 0.05,
   vatRate: 0.08,
+  /** Voucher quà tặng có hiệu lực bao nhiêu tháng */
+  voucherValidityMonths: 6,
   /** Nhạc nền tự phát (xem components/background-music.tsx) */
   music: {
     src: "/music/clair-de-lune.mp3",

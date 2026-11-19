@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { AnimatePresence, motion } from "motion/react";
 import { ChevronLeft, ChevronRight, Expand, X } from "lucide-react";
 import type { Tone } from "@/data/experiences";
+import { useT } from "@/i18n/use-lang";
 import { withBasePath } from "@/lib/base-path";
 import { Photo } from "./photo";
 import { RevealMask } from "./reveal";
@@ -23,6 +24,7 @@ export type GalleryItem = {
  * phím ← → để chuyển ảnh, Esc để đóng; khoá cuộn trang khi đang xem.
  */
 export function Gallery({ items }: { items: GalleryItem[] }) {
+  const { t } = useT();
   const photos = items.filter((i) => i.src);
   const [index, setIndex] = useState<number | null>(null);
   const closeBtn = useRef<HTMLButtonElement>(null);
@@ -71,7 +73,7 @@ export function Gallery({ items }: { items: GalleryItem[] }) {
                 type="button"
                 onClick={(e) => open(item.src!, e.currentTarget)}
                 className="group absolute inset-0 block cursor-zoom-in"
-                aria-label={`Xem ảnh lớn: ${item.alt}`}
+                aria-label={t.gallery.view(item.alt)}
               >
                 <Photo
                   src={item.src}
@@ -132,7 +134,7 @@ export function Gallery({ items }: { items: GalleryItem[] }) {
               type="button"
               onClick={close}
               className="absolute top-4 right-4 flex size-11 items-center justify-center rounded-full border border-cream/20 text-cream transition hover:bg-cream/10 sm:top-6 sm:right-6"
-              aria-label="Đóng"
+              aria-label={t.gallery.close}
             >
               <X className="size-5" />
             </button>
@@ -145,7 +147,7 @@ export function Gallery({ items }: { items: GalleryItem[] }) {
                     step(-1);
                   }}
                   className="absolute left-3 flex size-11 items-center justify-center rounded-full border border-cream/20 text-cream transition hover:bg-cream/10 sm:left-6"
-                  aria-label="Ảnh trước"
+                  aria-label={t.gallery.prev}
                 >
                   <ChevronLeft className="size-5" />
                 </button>
@@ -156,7 +158,7 @@ export function Gallery({ items }: { items: GalleryItem[] }) {
                     step(1);
                   }}
                   className="absolute right-3 flex size-11 items-center justify-center rounded-full border border-cream/20 text-cream transition hover:bg-cream/10 sm:right-6"
-                  aria-label="Ảnh sau"
+                  aria-label={t.gallery.next}
                 >
                   <ChevronRight className="size-5" />
                 </button>

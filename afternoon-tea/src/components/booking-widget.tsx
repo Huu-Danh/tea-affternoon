@@ -1,11 +1,14 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { addDays, parseISO, startOfMonth } from "date-fns";
 import { ArrowRight, Tag, Users } from "lucide-react";
 import type { Experience } from "@/data/experiences";
 import { venue } from "@/data/venue";
+import { localePath } from "@/i18n/config";
+import { useT } from "@/i18n/use-lang";
 import { bookingWindow, getSlots, toIsoDate, type Slot } from "@/lib/availability";
 import { formatLongDate, formatVnd } from "@/lib/format";
 import { packagePrice, pairSaving } from "@/lib/pricing";
@@ -15,18 +18,21 @@ import { Stepper } from "./stepper";
 import { btn, cn } from "./ui";
 
 export function BookingWidget({ exp }: { exp: Experience }) {
+  const { lang, t } = useT();
   const hydrated = useHydrated();
   return (
     <div id="book" className="rounded-sm border border-line bg-paper p-6 shadow-[0_24px_60px_-40px_rgba(35,64,58,0.5)] sm:p-7">
       <div className="flex items-baseline justify-between border-b border-line pb-5">
         <div>
-          <p className="font-display text-3xl text-navy">{formatVnd(exp.pricePerGuest)}</p>
-          <p className="text-xs text-muted">mỗi khách · chưa gồm phí phục vụ & VAT</p>
+          <p className="font-display text-3xl text-navy">{formatVnd(exp.pricePerGuest, lang)}</p>
+          <p className="text-xs text-muted">
+            {t.common.eachGuest} · {t.common.exclFees}
+          </p>
           {exp.pairPrice && (
             <p className="mt-2 inline-flex items-center gap-1.5 rounded-full bg-gold/10 px-3 py-1 text-xs text-ink">
               <Tag className="size-3.5 text-gold" />
-              Combo 2 người <strong className="font-semibold">{formatVnd(exp.pairPrice)}</strong>
-              <span className="text-muted">· tiết kiệm {formatVnd(pairSaving(exp))}</span>
+              {t.common.pairCombo} <strong className="font-semibold">{formatVnd(exp.pairPrice, lang)}</strong>
+              <span className="text-muted">· {t.common.save(formatVnd(pairSaving(exp), lang)).toLowerCase()}</span>
             </p>
           )}
         </div>
@@ -51,6 +57,8 @@ function slotFits(s: Slot, pax: number) {
 }
 
 function WidgetBody({ exp }: { exp: Experience }) {
+  const { lang, t } = useT();
+  const w = t.widget;
   const router = useRouter();
   const bookings = useBooking((s) => s.bookings);
   const draft = useBooking((s) => s.draft);
@@ -93,25 +101,31 @@ function WidgetBody({ exp }: { exp: Experience }) {
   function next() {
     if (!canContinue || !date || !time) return;
     startHold({ slug: exp.slug, date, time, pax });
-    router.push("/checkout/");
+    router.push(localePath(lang, "/checkout/"));
   }
 
   return (
     <div className="space-y-7 pt-6">
       <section>
-        <h3 className="mb-3 text-xs font-medium uppercase tracking-[0.2em] text-muted">1 · Số khách</h3>
+        <h3 className="mb-3 text-xs font-medium uppercase tracking-[0.2em] text-muted">{w.step1}</h3>
         <div className="flex items-center justify-between rounded-sm border border-line px-4 py-3">
           <span className="inline-flex items-center gap-2 text-sm">
             <Users className="size-4 text-gold" />
-            {pax} khách
+            {t.common.guests(pax)}
           </span>
-          <Stepper value={pax} min={exp.minPax} max={exp.maxPax} onChange={changePax} label="số khách" />
+          <Stepper value={pax} min={exp.minPax} max={exp.maxPax} onChange={changePax} label={w.guestsAria} />
         </div>
-        {exp.minPax > 1 && <p className="mt-2 text-xs text-muted">Tối thiểu {exp.minPax} khách.</p>}
+        {exp.minPax > 1 && <p className="mt-2 text-xs text-muted">{w.minGuests(exp.minPax)}</p>}
+        <p className="mt-2 text-xs text-muted">
+          {w.bigGroup}{" "}
+          <Link href={localePath(lang, "/private-events/")} className="text-navy underline decoration-gold underline-offset-4">
+            {w.bigGroupLink}
+          </Link>
+        </p>
       </section>
 
       <section>
-        <h3 className="mb-3 text-xs font-medium uppercase tracking-[0.2em] text-muted">2 · Chọn ngày</h3>
+        <h3 className="mb-3 text-xs font-medium uppercase tracking-[0.2em] text-muted">{w.step2}</h3>
         <Calendar
           month={month}
           onMonthChange={setMonth}
@@ -124,19 +138,19 @@ function WidgetBody({ exp }: { exp: Experience }) {
       </section>
 
       <section>
-        <h3 className="mb-3 text-xs font-medium uppercase tracking-[0.2em] text-muted">3 · Chọn giờ</h3>
+        <h3 className="mb-3 text-xs font-medium uppercase tracking-[0.2em] text-muted">{w.step3}</h3>
         {date ? (
           <>
-            <p className="mb-3 text-sm text-ink">{formatLongDate(date)}</p>
+            <p className="mb-3 text-sm text-ink">{formatLongDate(date, lang)}</p>
             <div className="grid grid-cols-3 gap-2">
               {slots.map((s) => {
                 const fits = slotFits(s, pax);
                 const sel = s.time === time;
-                let hint = "Còn chỗ";
-                if (s.closed) hint = "Đã đóng";
-                else if (s.remaining === 0) hint = "Hết chỗ";
-                else if (s.remaining < pax) hint = `Chỉ còn ${s.remaining}`;
-                else if (s.remaining <= 4) hint = `Còn ${s.remaining} chỗ`;
+                let hint = w.available;
+                if (s.closed) hint = w.closed;
+                else if (s.remaining === 0) hint = w.full;
+                else if (s.remaining < pax) hint = w.onlyLeft(s.remaining);
+                else if (s.remaining <= 4) hint = w.left(s.remaining);
                 return (
                   <button
                     key={s.time}
@@ -168,31 +182,31 @@ function WidgetBody({ exp }: { exp: Experience }) {
             </div>
           </>
         ) : (
-          <p className="text-sm text-muted">Vui lòng chọn ngày để xem khung giờ.</p>
+          <p className="text-sm text-muted">{w.pickDateFirst}</p>
         )}
       </section>
 
       <div className="space-y-4 border-t border-line pt-5">
         <div className="flex items-center justify-between text-sm">
           <span className="text-muted">
-            {formatVnd(exp.pricePerGuest)} × {pax} khách
+            {w.lineGuests(formatVnd(exp.pricePerGuest, lang), pax)}
           </span>
           <span className={cn(price.pairDiscount > 0 ? "text-muted line-through" : "font-medium")}>
-            {formatVnd(price.listBase)}
+            {formatVnd(price.listBase, lang)}
           </span>
         </div>
         {price.pairDiscount > 0 && (
           <div className="flex items-center justify-between text-sm">
-            <span className="text-navy">Ưu đãi combo 2 người × {price.pairs}</span>
-            <span className="font-medium text-navy">{formatVnd(price.base)}</span>
+            <span className="text-navy">{w.comboLine(price.pairs)}</span>
+            <span className="font-medium text-navy">{formatVnd(price.base, lang)}</span>
           </div>
         )}
         <button type="button" onClick={next} disabled={!canContinue} className={cn(btn.primary, "w-full py-4 text-[15px]")}>
-          Giữ chỗ & tiếp tục
+          {w.hold}
           <ArrowRight className="size-4" />
         </button>
         <p className="text-center text-xs text-muted">
-          Chỗ được giữ trong {venue.holdMinutes} phút để bạn hoàn tất thanh toán.
+          {w.holdNote(venue.holdMinutes)}
         </p>
       </div>
     </div>

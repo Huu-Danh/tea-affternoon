@@ -4,6 +4,7 @@ import { useEffect, useRef } from "react";
 import { usePathname } from "next/navigation";
 import { getExperience } from "@/data/experiences";
 import { venue } from "@/data/venue";
+import { splitLocale } from "@/i18n/config";
 import { withBasePath } from "@/lib/base-path";
 import { useBooking } from "@/lib/store";
 
@@ -27,7 +28,7 @@ function musicOf(slug?: string | null) {
 }
 
 function trackFor(pathname: string, draftSlug?: string, lastSlug?: string) {
-  const path = pathname.replace(/\/+$/, "");
+  const path = splitLocale(pathname).path.replace(/\/+$/, "");
   const detail = path.match(/^\/experiences\/([^/]+)$/);
   if (detail) return musicOf(detail[1]);
   // Thanh toán xong, draft bị xoá trước khi chuyển sang /confirmation:

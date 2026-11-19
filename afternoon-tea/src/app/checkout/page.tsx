@@ -1,7 +1,10 @@
-import type { Metadata } from "next";
-import { CheckoutView } from "./checkout-view";
+import { dict } from "@/i18n/dict";
+import { pageMeta } from "@/i18n/meta";
+import { CheckoutView } from "@/views/checkout-view";
 
-export const metadata: Metadata = { title: "Thông tin đặt chỗ", robots: { index: false } };
+const t = dict.vi;
+
+export const metadata = pageMeta("vi", "/checkout/", t.checkout.title, { noindex: true });
 
 export default function CheckoutPage() {
   return <CheckoutView />;

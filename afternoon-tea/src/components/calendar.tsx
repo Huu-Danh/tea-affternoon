@@ -11,12 +11,11 @@ import {
   startOfMonth,
   startOfWeek,
 } from "date-fns";
-import { vi } from "date-fns/locale";
 import { ChevronLeft, ChevronRight } from "lucide-react";
+import { useT } from "@/i18n/use-lang";
 import { toIsoDate } from "@/lib/availability";
+import { dateLocale } from "@/lib/format";
 import { cn } from "./ui";
-
-const weekdays = ["T2", "T3", "T4", "T5", "T6", "T7", "CN"];
 
 export function Calendar({
   month,
@@ -35,13 +34,15 @@ export function Calendar({
   onSelect: (iso: string) => void;
   isAvailable: (d: Date) => boolean;
 }) {
+  const { lang, t } = useT();
+  const locale = dateLocale[lang];
   const days = eachDayOfInterval({
     start: startOfWeek(startOfMonth(month), { weekStartsOn: 1 }),
     end: endOfWeek(endOfMonth(month), { weekStartsOn: 1 }),
   });
   const canPrev = month > minMonth;
   const canNext = month < maxMonth;
-  const title = format(month, "LLLL yyyy", { locale: vi });
+  const title = format(month, "LLLL yyyy", { locale });
 
   return (
     <div>
@@ -51,7 +52,7 @@ export function Calendar({
           onClick={() => onMonthChange(addMonths(month, -1))}
           disabled={!canPrev}
           className="rounded-full p-2 text-ink transition hover:bg-ink/5 disabled:opacity-25"
-          aria-label="Tháng trước"
+          aria-label={t.calendar.prev}
         >
           <ChevronLeft className="size-4" />
         </button>
@@ -63,14 +64,14 @@ export function Calendar({
           onClick={() => onMonthChange(addMonths(month, 1))}
           disabled={!canNext}
           className="rounded-full p-2 text-ink transition hover:bg-ink/5 disabled:opacity-25"
-          aria-label="Tháng sau"
+          aria-label={t.calendar.next}
         >
           <ChevronRight className="size-4" />
         </button>
       </div>
 
       <div className="grid grid-cols-7 text-center text-[11px] font-medium uppercase tracking-wider text-muted">
-        {weekdays.map((w) => (
+        {t.calendar.weekdays.map((w) => (
           <div key={w} className="pb-2">
             {w}
           </div>
@@ -90,7 +91,7 @@ export function Calendar({
               disabled={!available}
               onClick={() => onSelect(iso)}
               aria-pressed={isSel}
-              aria-label={format(d, "EEEE dd/MM/yyyy", { locale: vi })}
+              aria-label={format(d, "EEEE dd/MM/yyyy", { locale })}
               className={cn(
                 "relative aspect-square rounded-full text-sm tabular-nums transition",
                 !inMonth && "invisible",

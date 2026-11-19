@@ -82,6 +82,24 @@ details > summary::-webkit-details-marker {
   display: none;
 }
 
+/* In voucher: chỉ in tấm voucher, giữ nguyên màu nền */
+@media print {
+  header,
+  footer,
+  .intro {
+    display: none !important;
+  }
+  body {
+    background: #fff;
+  }
+  .print-area {
+    max-width: 120mm !important;
+    margin: 0 auto !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+}
+
 /* Vạch sáng chạy dọc ở chỉ dẫn "Khám phá" dưới hero */
 @keyframes scroll-cue {
   from {

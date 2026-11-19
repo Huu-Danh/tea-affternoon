@@ -5,17 +5,10 @@ import { useState, useSyncExternalStore } from "react";
 import { usePathname } from "next/navigation";
 import { Menu, X } from "lucide-react";
 import { venue } from "@/data/venue";
+import { langs, localePath, splitLocale, switchLocalePath } from "@/i18n/config";
+import { useT } from "@/i18n/use-lang";
 import { withBasePath } from "@/lib/base-path";
 import { btn, cn } from "./ui";
-
-const nav = [
-  { href: "/#experiences", label: "Trải nghiệm" },
-  { href: "/#offers", label: "Ưu đãi" },
-  { href: "/#menu", label: "Thực đơn" },
-  { href: "/#gallery", label: "Không gian" },
-  { href: "/#faq", label: "Hỏi đáp" },
-  { href: "/my-bookings/", label: "Đặt chỗ của tôi" },
-];
 
 const subscribeScroll = (cb: () => void) => {
   window.addEventListener("scroll", cb, { passive: true });
@@ -31,12 +24,54 @@ function useScrolled(threshold = 40) {
   );
 }
 
+/** Nút chuyển ngôn ngữ VI | EN (giữ nguyên trang đang xem) */
+function LangSwitch({ light, className }: { light?: boolean; className?: string }) {
+  const pathname = usePathname() ?? "/";
+  const { lang, t } = useT();
+  return (
+    <div className={cn("flex items-center gap-1 text-[11px] font-medium tracking-[0.2em]", className)} aria-label={t.nav.language}>
+      {langs.map((l, i) => (
+        <span key={l} className="flex items-center gap-1">
+          {i > 0 && <span className={light ? "text-cream/30" : "text-line"}>|</span>}
+          <Link
+            href={switchLocalePath(pathname, l)}
+            hrefLang={l}
+            lang={l}
+            aria-current={l === lang ? "true" : undefined}
+            className={cn(
+              "px-1 py-1 uppercase transition",
+              l === lang
+                ? light
+                  ? "text-gold-soft"
+                  : "text-navy"
+                : light
+                  ? "text-cream/60 hover:text-cream"
+                  : "text-muted hover:text-navy",
+            )}
+          >
+            {l}
+          </Link>
+        </span>
+      ))}
+    </div>
+  );
+}
+
 export function SiteHeader() {
   const [open, setOpen] = useState(false);
-  const pathname = usePathname();
+  const pathname = usePathname() ?? "/";
+  const { lang, t } = useT();
   const scrolled = useScrolled();
   // Trang chủ: header trong suốt nằm trên hero cho tới khi cuộn xuống
-  const overHero = pathname === "/" && !scrolled && !open;
+  const overHero = splitLocale(pathname).path === "/" && !scrolled && !open;
+
+  const nav = [
+    { href: "/#experiences", label: t.nav.experiences },
+    { href: "/#offers", label: t.nav.offers },
+    { href: "/gift-voucher/", label: t.nav.gift },
+    { href: "/private-events/", label: t.nav.events },
+    { href: "/my-bookings/", label: t.nav.myBookings },
+  ];
 
   return (
     <header
@@ -49,10 +84,10 @@ export function SiteHeader() {
     >
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:h-20 lg:px-8">
         <Link
-          href="/"
+          href={localePath(lang, "/")}
           className="flex items-center gap-3 lg:gap-4"
           onClick={() => setOpen(false)}
-          aria-label={`${venue.name} Afternoon Tea – Trang chủ`}
+          aria-label={`${venue.name} Afternoon Tea – ${t.nav.home}`}
         >
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
@@ -67,19 +102,19 @@ export function SiteHeader() {
             <span className={cn("font-script text-[26px] leading-none lg:text-[30px]", overHero ? "text-cream" : "text-navy")}>
               Afternoon Tea
             </span>
-            <span className={cn("mt-1 text-[9px] uppercase tracking-[0.34em]", overHero ? "text-gold-soft" : "text-gold")}>
+            <span className={cn("mt-1 text-[9px] tracking-[0.34em] uppercase", overHero ? "text-gold-soft" : "text-gold")}>
               {venue.lounge}
             </span>
           </span>
         </Link>
 
-        <nav className="hidden items-center gap-7 xl:flex" aria-label="Chính">
+        <nav className="hidden items-center gap-6 xl:flex" aria-label={lang === "en" ? "Main" : "Chính"}>
           {nav.map((n) => (
             <Link
               key={n.href}
-              href={n.href}
+              href={localePath(lang, n.href)}
               className={cn(
-                "group relative whitespace-nowrap text-[13px] tracking-wide transition",
+                "group relative text-[13px] tracking-wide whitespace-nowrap transition",
                 overHero ? "text-cream/85 hover:text-cream" : "text-ink/75 hover:text-navy",
               )}
             >
@@ -87,36 +122,40 @@ export function SiteHeader() {
               <span className="absolute -bottom-1.5 left-0 h-px w-full origin-left scale-x-0 bg-gold transition-transform duration-300 group-hover:scale-x-100" />
             </Link>
           ))}
-          <Link href="/#experiences" className={cn(overHero ? btn.light : btn.primary, "py-3 whitespace-nowrap")}>
-            Đặt chỗ
+          <LangSwitch light={overHero} />
+          <Link href={localePath(lang, "/#experiences")} className={cn(overHero ? btn.light : btn.primary, "py-3 whitespace-nowrap")}>
+            {t.nav.book}
           </Link>
         </nav>
 
-        <button
-          type="button"
-          className={cn("-mr-2 rounded-full p-2 xl:hidden", overHero ? "text-cream" : "text-ink")}
-          aria-label={open ? "Đóng menu" : "Mở menu"}
-          aria-expanded={open}
-          onClick={() => setOpen((v) => !v)}
-        >
-          {open ? <X className="size-6" /> : <Menu className="size-6" />}
-        </button>
+        <div className="flex items-center gap-2 xl:hidden">
+          <LangSwitch light={overHero} />
+          <button
+            type="button"
+            className={cn("-mr-2 rounded-full p-2", overHero ? "text-cream" : "text-ink")}
+            aria-label={open ? t.nav.closeMenu : t.nav.openMenu}
+            aria-expanded={open}
+            onClick={() => setOpen((v) => !v)}
+          >
+            {open ? <X className="size-6" /> : <Menu className="size-6" />}
+          </button>
+        </div>
       </div>
 
       {open && (
-        <nav className="border-t border-line bg-cream px-4 pt-2 pb-6 xl:hidden" aria-label="Di động">
+        <nav className="border-t border-line bg-cream px-4 pt-2 pb-6 xl:hidden" aria-label={lang === "en" ? "Mobile" : "Di động"}>
           {nav.map((n) => (
             <Link
               key={n.href}
-              href={n.href}
+              href={localePath(lang, n.href)}
               onClick={() => setOpen(false)}
               className="block border-b border-line/60 py-4 font-display text-2xl text-ink"
             >
               {n.label}
             </Link>
           ))}
-          <Link href="/#experiences" onClick={() => setOpen(false)} className={cn(btn.primary, "mt-6 w-full")}>
-            Đặt chỗ ngay
+          <Link href={localePath(lang, "/#experiences")} onClick={() => setOpen(false)} className={cn(btn.primary, "mt-6 w-full")}>
+            {t.nav.bookNow}
           </Link>
         </nav>
       )}

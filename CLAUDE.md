@@ -55,7 +55,36 @@ There is no test suite.
 - `src/data/experiences.ts` holds the tea packages (price, days of week, time slots, capacity per slot, menu, terms), the add-ons and the occasion options.
 - All prices are in VND.
 
-**Booking flow:** `/` → `/experiences/[slug]` → `/checkout` → `/payment` → `/confirmation`, plus `/my-bookings`. State passes between pages only through the Zustand store in `src/lib/store.ts`, persisted to `localStorage`. There are no query strings.
+**Bilingual (vi / en):**
+- Vietnamese lives at the root (`/…`) and English under `/en/…`. Both share one root layout, so switching language is a client-side navigation and the music keeps playing.
+- Every route therefore exists twice in `src/app` (`page.tsx` and `en/.../page.tsx`). These are thin wrappers that set metadata and render a shared view from `src/views/`:
+  - server views: `home.tsx`, `experience.tsx`
+  - client views: `*-view.tsx`
+- When you add a page, add both wrappers. Write UI text in `src/i18n/dict.ts`: add the key to `vi` first, and `en` is typed as `Dict`, so a missing key is a type error.
+- Translatable data fields (in experiences, add-ons, comparison and venue) are typed `L = { vi, en }`. Read them with `tr(field, lang)`. Experience names stay in English.
+- Language:
+  - Client components get it from the URL with `useLang()`/`useT()` in `src/i18n/use-lang.ts`.
+  - Server views receive a `lang` prop and use `dict[lang]`.
+- Wrap internal hrefs and `router.push` targets in `localePath(lang, path)`. The header's VI|EN switch uses `switchLocalePath`.
+- Formatters in `lib/format.ts` take `lang`.
+- `<html lang>` defaults to `vi`. An inline script in `layout.tsx` sets it to `en` for `/en` paths, and `HtmlLang` updates it after client navigation.
+- `app/en/layout.tsx` holds the English default metadata. Its `title.absolute` stops the root title template from being applied twice.
+- Occasion values are stored as keys (`occasionKeys`) and labelled through the dictionary. Old bookings may hold Vietnamese labels; `checkout-view` and `booking-details` handle both.
+
+**Booking flow:** `/` → `/experiences/[slug]` → `/checkout` → `/payment` → `/confirmation`, plus `/my-bookings`. Each route also has its `/en/...` twin. State passes between pages only through the Zustand store in `src/lib/store.ts`, persisted to `localStorage`. There are no query strings.
+
+**Extra pages:**
+- `/gift-voucher/` lets a guest pick a set and number of guests, enter recipient and sender details and pay (simulated). It calls `addVoucher()`, which returns a `GV-` code valid for `venue.voucherValidityMonths`. A live `VoucherCard` preview sits beside the form, and "Print / save as PDF" uses `window.print()` with the `.print-area` print CSS.
+- `/private-events/` is an enquiry form for groups of 9 or more. It calls `addInquiry()` and returns an `EV-` reference. Nothing is sent anywhere.
+- `/my-bookings` lists bookings, vouchers and enquiries.
+- Checkout and voucher share `PaymentMethodPicker`, `ProcessingOverlay`, `PriceLines` and `Field` from `components/checkout-parts.tsx`.
+
+**SEO and sharing:**
+- `metadataBase` comes from `siteUrl` in `lib/site.ts`. It uses `NEXT_PUBLIC_SITE_URL` if set, otherwise Vercel's `VERCEL_PROJECT_PRODUCTION_URL`, otherwise localhost.
+- `pageMeta()` in `i18n/meta.ts` and `alternatesFor()` add hreflang links. Booking pages are `noindex`.
+- `app/sitemap.ts` and `app/robots.ts` are `force-static`.
+- The Open Graph images are `public/og/og-vi.jpg` and `og-en.jpg` (1200×630).
+- Icons come from `app/favicon.ico` (a real multi-size ICO), `app/icon.png` (Hilton mark on a round white background) and `app/apple-icon.png` (square, because iOS fills transparency with black). They were generated from `assets/hilton-saigon-logo-black.png`.
 
 - `startHold()` creates a `draft` with `holdExpiresAt`. Checkout and payment show `HoldExpired` when the hold runs out.
 - `setGuest()` and `setAddonQty()` fill in the draft.
@@ -70,7 +99,7 @@ There is no test suite.
 
 **Hydration rule:** pages are prerendered at build time, but they depend on `localStorage` and on the current date. Any component that reads the store or calls `new Date()` for availability must render a skeleton until `useHydrated()` returns true. Current examples are `BookingWidget` → `WidgetBody`, and each `*-view.tsx` under `checkout/`, `payment/`, `confirmation/` and `my-bookings/`.
 
-**Page pattern:** for client pages, `page.tsx` is a server component that exports `metadata` and renders a `"use client"` `*-view.tsx` component.
+**Page pattern:** every `page.tsx` is a thin server wrapper. It exports `metadata`, using `pageMeta`/`alternatesFor`, and renders a view from `src/views/`. Client views are `"use client"` `*-view.tsx` files that read the language from the URL.
 
 **Styling (luxury look):**
 - Tailwind v4 design tokens are defined in `@theme` in `src/app/globals.css`:

@@ -1,7 +1,10 @@
-import type { Metadata } from "next";
-import { ConfirmationView } from "./confirmation-view";
+import { dict } from "@/i18n/dict";
+import { pageMeta } from "@/i18n/meta";
+import { ConfirmationView } from "@/views/confirmation-view";
 
-export const metadata: Metadata = { title: "Đặt chỗ thành công", robots: { index: false } };
+const t = dict.vi;
+
+export const metadata = pageMeta("vi", "/confirmation/", t.confirmation.title, { noindex: true });
 
 export default function ConfirmationPage() {
   return <ConfirmationView />;

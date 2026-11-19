@@ -4,8 +4,11 @@ import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
 import { BackgroundMusic } from "@/components/background-music";
 import { SmoothScroll } from "@/components/smooth-scroll";
+import { HtmlLang } from "@/components/html-lang";
 import { venue } from "@/data/venue";
+import { dict } from "@/i18n/dict";
 import { withBasePath } from "@/lib/base-path";
+import { siteUrl } from "@/lib/site";
 import "./globals.css";
 
 const display = Cormorant_Garamond({
@@ -28,18 +31,26 @@ const script = Pinyon_Script({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL(siteUrl),
   title: {
-    default: `Afternoon Tea | ${venue.name}`,
+    default: dict.vi.meta.title,
     template: `%s | ${venue.name}`,
   },
-  description: venue.description,
+  description: dict.vi.meta.description,
   openGraph: {
-    title: `Afternoon Tea | ${venue.name}`,
-    description: venue.description,
+    title: dict.vi.meta.title,
+    description: dict.vi.meta.description,
+    siteName: `${venue.name} · ${venue.lounge}`,
     type: "website",
     locale: "vi_VN",
+    alternateLocale: ["en_US"],
+    images: [{ url: "/og/og-vi.jpg", width: 1200, height: 630, alt: dict.vi.meta.title }],
   },
+  twitter: { card: "summary_large_image" },
 };
+
+/** Đặt <html lang> = "en" cho các trang /en/ ngay khi tải (layout gốc dùng chung cho 2 ngôn ngữ) */
+const setLangScript = `(function(){var p=location.pathname.slice(${JSON.stringify(process.env.NEXT_PUBLIC_BASE_PATH ?? "")}.length);if(p==="/en"||p.indexOf("/en/")===0)document.documentElement.lang="en"})()`;
 
 export const viewport: Viewport = {
   themeColor: "#1b2a4a",
@@ -47,8 +58,12 @@ export const viewport: Viewport = {
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
-    <html lang="vi" className={`${display.variable} ${sans.variable} ${script.variable} h-full`}>
+    <html lang="vi" suppressHydrationWarning className={`${display.variable} ${sans.variable} ${script.variable} h-full`}>
+      <head>
+        <script dangerouslySetInnerHTML={{ __html: setLangScript }} />
+      </head>
       <body className="flex min-h-full flex-col">
+        <HtmlLang />
         <Intro />
         <SiteHeader />
         <main className="flex-1">{children}</main>
