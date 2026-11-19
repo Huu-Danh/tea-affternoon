@@ -18,6 +18,7 @@ export const venue = {
   music: {
     src: "/music/saturn-3-music-clair-de-lune-debussy-soft-piano-411227.mp3",
     title: "Clair de Lune – Debussy",
-    volume: 0.35,
+    /** 0 → 1 (1 là tối đa của trình duyệt) */
+    volume: 0.8,
   },
 } as const;
