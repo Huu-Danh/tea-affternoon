@@ -31,6 +31,8 @@ export type Experience = {
   pairPrice?: number;
   /** Poster chương trình ưu đãi */
   offerPoster?: string;
+  /** Nhạc nền riêng khi xem trang chi tiết và trong lúc đặt gói này */
+  music?: string;
 };
 
 // TODO: chính sách mẫu, cần xác nhận với khách sạn
@@ -51,6 +53,7 @@ export const experiences: Experience[] = [
     pricePerGuest: 499000,
     pairPrice: 949000,
     offerPoster: "/images/clasic.jpg",
+    music: "/music/European Classic.mp3",
     // TODO: thời lượng, số khách và sức chứa là giá trị mẫu, cần xác nhận
     durationMinutes: 120,
     minPax: 1,
@@ -86,6 +89,7 @@ export const experiences: Experience[] = [
     pricePerGuest: 599000,
     pairPrice: 1139000,
     offerPoster: "/images/premium.jpg",
+    music: "/music/European Premium.mp3",
     // TODO: thời lượng, số khách và sức chứa là giá trị mẫu, cần xác nhận
     durationMinutes: 120,
     minPax: 1,

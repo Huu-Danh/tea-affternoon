@@ -81,3 +81,17 @@ There is no test suite.
 **Images:**
 - `Photo` (`src/components/photo.tsx`) shows `src` when it is set. Otherwise it draws a gradient by `tone` plus an SVG line illustration (`art`: cup, stand or pot).
 - To use real photos, put them in `public/images/` and set `image` on each experience.
+
+**Background music:**
+- `BackgroundMusic` (`src/components/background-music.tsx`) has no UI. By the owner's choice there is no play/mute button.
+- It is rendered in the root layout, so the music keeps playing across client-side navigations. The volume and the default track are set in `venue.music`.
+- The track depends on the page, and `trackFor()` picks it:
+  - `/experiences/[slug]` plays that experience's `music`.
+  - `/checkout`, `/payment` and `/confirmation` play the music of the draft's experience. If there is no draft, they use the last booking's experience. This matters because `confirm()` clears the draft before the redirect, and without the fallback the track would restart.
+  - Every other page plays the default track.
+- Tracks are crossfaded on a single reused `Audio` element. Reusing it keeps the browser's autoplay permission.
+- File names in `public/music/` may contain spaces, so the URL goes through `encodeURI()`.
+- On mount it calls `audio.play()`. Browsers usually block autoplay with sound; when that happens it retries on the first pointer, touch or key event. Scrolling does not count as a user activation.
+- It pauses while the tab is hidden.
+- On a local Windows static build, navigation becomes full page reloads (see the Windows build note), so the music restarts. Test this with `next dev`.
+- When testing with puppeteer, do not wait for `networkidle`: once the mp3 is streaming, the network never goes idle.

@@ -18,7 +18,6 @@
   --font-sans: var(--font-bevn), system-ui, sans-serif;
 
   --animate-fade-up: fade-up 0.7s cubic-bezier(0.2, 0.7, 0.2, 1) both;
-
   @keyframes fade-up {
     from {
       opacity: 0;

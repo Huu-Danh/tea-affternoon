@@ -14,4 +14,10 @@ export const venue = {
   holdMinutes: 10,
   serviceChargeRate: 0.05,
   vatRate: 0.08,
+  /** Nhạc nền tự phát (xem components/background-music.tsx) */
+  music: {
+    src: "/music/saturn-3-music-clair-de-lune-debussy-soft-piano-411227.mp3",
+    title: "Clair de Lune – Debussy",
+    volume: 0.35,
+  },
 } as const;
