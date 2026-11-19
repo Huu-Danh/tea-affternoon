@@ -6,7 +6,11 @@ import { Reveal } from "@/components/reveal";
 import { btn, cn, eyebrow } from "@/components/ui";
 import { comparison, experiences } from "@/data/experiences";
 import { venue } from "@/data/venue";
+import { withBasePath } from "@/lib/base-path";
 import { formatVnd } from "@/lib/format";
+import { pairSaving } from "@/lib/pricing";
+
+const offers = experiences.filter((e) => e.pairPrice && e.offerPoster);
 
 const faqs = [
   {
@@ -148,6 +152,11 @@ export default function Home() {
                         </Link>
                         <p className="mt-1 font-display text-lg text-forest sm:text-xl">{formatVnd(e.pricePerGuest)}</p>
                         <p className="text-xs font-normal text-muted">mỗi khách</p>
+                        {e.pairPrice && (
+                          <p className="mt-2 text-xs font-normal text-gold">
+                            Combo 2 người: <span className="font-medium">{formatVnd(e.pairPrice)}</span>
+                          </p>
+                        )}
                       </th>
                     ))}
                   </tr>
@@ -180,6 +189,58 @@ export default function Home() {
           </Reveal>
         )}
       </section>
+
+      {/* OFFERS */}
+      {offers.length > 0 && (
+        <section id="offers" className="bg-forest text-cream">
+          <div className="mx-auto max-w-7xl px-4 py-24 sm:px-6 lg:px-8 lg:py-32">
+            <Reveal className="mx-auto max-w-2xl text-center">
+              <p className={cn(eyebrow, "text-gold-soft")}>Ưu đãi</p>
+              <h2 className="mt-4 font-display text-4xl sm:text-5xl">Combo cho hai người</h2>
+              <p className="mt-5 text-cream/70">
+                Đi cùng người thân hay bạn bè? Đặt combo 2 người để nhận mức giá tốt hơn. Phục vụ 14:00 – 17:00 hằng
+                ngày tại {venue.lounge}.
+              </p>
+            </Reveal>
+
+            <div className="mt-16 grid gap-10 md:grid-cols-2 lg:gap-14">
+              {offers.map((e, i) => (
+                <Reveal key={e.slug} delay={i * 0.1} className="flex flex-col">
+                  <Link
+                    href={`/experiences/${e.slug}/`}
+                    className="group mx-auto block w-full max-w-md overflow-hidden rounded-3xl shadow-[0_30px_60px_-30px_rgba(0,0,0,0.6)] ring-1 ring-cream/10"
+                  >
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img
+                      src={withBasePath(e.offerPoster!)}
+                      alt={`Poster ưu đãi ${e.name} Afternoon Tea: ${formatVnd(e.pricePerGuest)} / 1 người, ${formatVnd(e.pairPrice!)} / 2 người, 14:00 – 17:00 hằng ngày tại ${venue.lounge}, ${venue.name}`}
+                      className="aspect-3/4 w-full object-cover transition duration-700 group-hover:scale-[1.02]"
+                      loading="lazy"
+                    />
+                  </Link>
+                  <div className="mx-auto mt-8 flex w-full max-w-md flex-wrap items-end justify-between gap-4">
+                    <div>
+                      <p className="font-display text-3xl">{e.name}</p>
+                      <p className="mt-2 flex flex-wrap items-baseline gap-x-3">
+                        <span className="font-display text-3xl text-gold-soft">{formatVnd(e.pairPrice!)}</span>
+                        <span className="text-sm text-cream/60">/ 2 người</span>
+                        <span className="text-sm text-cream/40 line-through">{formatVnd(e.pricePerGuest * 2)}</span>
+                      </p>
+                      <p className="mt-2 inline-flex rounded-full bg-gold/20 px-3 py-1 text-xs text-gold-soft">
+                        Tiết kiệm {formatVnd(pairSaving(e))}
+                      </p>
+                    </div>
+                    <Link href={`/experiences/${e.slug}/`} className={btn.gold}>
+                      Đặt combo
+                    </Link>
+                  </div>
+                </Reveal>
+              ))}
+            </div>
+            <p className="mt-12 text-center text-xs text-cream/40">Hình ảnh chỉ mang tính chất minh hoạ.</p>
+          </div>
+        </section>
+      )}
 
       {/* STORY */}
       <section className="bg-sand/60">

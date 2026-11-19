@@ -9,6 +9,7 @@ import { btn, cn } from "./ui";
 
 const nav = [
   { href: "/#experiences", label: "Trải nghiệm" },
+  { href: "/#offers", label: "Ưu đãi" },
   { href: "/#menu", label: "Thực đơn" },
   { href: "/#gallery", label: "Không gian" },
   { href: "/#faq", label: "Hỏi đáp" },
@@ -31,20 +32,20 @@ export function SiteHeader() {
           </span>
         </Link>
 
-        <nav className="hidden items-center gap-8 lg:flex" aria-label="Chính">
+        <nav className="hidden items-center gap-7 xl:flex" aria-label="Chính">
           {nav.map((n) => (
-            <Link key={n.href} href={n.href} className="text-sm text-ink/80 transition hover:text-forest">
+            <Link key={n.href} href={n.href} className="whitespace-nowrap text-sm text-ink/80 transition hover:text-forest">
               {n.label}
             </Link>
           ))}
-          <Link href="/#experiences" className={cn(btn.primary, "py-2.5")}>
+          <Link href="/#experiences" className={cn(btn.primary, "whitespace-nowrap py-2.5")}>
             Đặt chỗ
           </Link>
         </nav>
 
         <button
           type="button"
-          className="-mr-2 rounded-full p-2 text-ink lg:hidden"
+          className="-mr-2 rounded-full p-2 text-ink xl:hidden"
           aria-label={open ? "Đóng menu" : "Mở menu"}
           aria-expanded={open}
           onClick={() => setOpen((v) => !v)}
@@ -54,7 +55,7 @@ export function SiteHeader() {
       </div>
 
       {open && (
-        <nav className="border-t border-line bg-cream px-4 pb-6 pt-2 lg:hidden" aria-label="Di động">
+        <nav className="border-t border-line bg-cream px-4 pb-6 pt-2 xl:hidden" aria-label="Di động">
           {nav.map((n) => (
             <Link
               key={n.href}

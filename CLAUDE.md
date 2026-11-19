@@ -63,7 +63,10 @@ There is no test suite.
 
 **Availability:** `src/lib/availability.ts` simulates seat availability. "Seats taken" is a deterministic hash of slug + date + time, minus the user's own confirmed bookings. When a backend is added, this file and the store actions are the only places to swap in API calls.
 
-**Pricing:** `src/lib/pricing.ts` has `computeTotals()`: base + add-ons, then service charge, then VAT on (subtotal + service charge). Every summary goes through this function.
+**Pricing:** `src/lib/pricing.ts` has `computeTotals()`.
+- Package price comes from `packagePrice()`: when an experience has `pairPrice` (the 2-person combo from the offer posters), each pair of guests is charged `pairPrice` and an odd guest pays `pricePerGuest`.
+- The total is that package price + add-ons, then service charge, then VAT on (subtotal + service charge).
+- The booking widget, the order summary and payment all go through these functions.
 
 **Hydration rule:** pages are prerendered at build time, but they depend on `localStorage` and on the current date. Any component that reads the store or calls `new Date()` for availability must render a skeleton until `useHydrated()` returns true. Current examples are `BookingWidget` → `WidgetBody`, and each `*-view.tsx` under `checkout/`, `payment/`, `confirmation/` and `my-bookings/`.
 

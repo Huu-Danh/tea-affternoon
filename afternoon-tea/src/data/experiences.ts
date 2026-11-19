@@ -27,6 +27,10 @@ export type Experience = {
   terms: string[];
   /** Dịch vụ đi kèm: hiện thêm trường/ghi chú tương ứng ở bước checkout */
   perks?: { greetingCard?: boolean; tableDecor?: boolean };
+  /** Giá combo 2 người (theo poster ưu đãi). Mỗi cặp khách tính theo giá này. */
+  pairPrice?: number;
+  /** Poster chương trình ưu đãi */
+  offerPoster?: string;
 };
 
 // TODO: chính sách mẫu, cần xác nhận với khách sạn
@@ -45,6 +49,8 @@ export const experiences: Experience[] = [
     description:
       "European Classic được xây dựng dành cho khách muốn trải nghiệm Afternoon Tea theo hướng đầy đủ nhưng đơn giản hơn. Gói tập trung vào những giá trị cơ bản của Afternoon Tea: thưởng trà, dùng bánh và món mặn, trò chuyện và thư giãn tại Me Linh Lounge.",
     pricePerGuest: 499000,
+    pairPrice: 949000,
+    offerPoster: "/images/clasic.jpg",
     // TODO: thời lượng, số khách và sức chứa là giá trị mẫu, cần xác nhận
     durationMinutes: 120,
     minPax: 1,
@@ -78,6 +84,8 @@ export const experiences: Experience[] = [
     description:
       "European Premium dành cho khách muốn một buổi Afternoon Tea trọn vẹn hơn: món mặn dùng nguyên liệu cao cấp như cá hồi xông khói và trứng cá, thêm nhiều loại bánh như macaron, chocolate éclair và raspberry mousse cake, lựa chọn trà hoa cúc bên cạnh trà Earl Grey, cùng welcome drink. Với khách có dịp đặc biệt, nhóm có thể chuẩn bị thiệp chúc mừng và trang trí bàn.",
     pricePerGuest: 599000,
+    pairPrice: 1139000,
+    offerPoster: "/images/premium.jpg",
     // TODO: thời lượng, số khách và sức chứa là giá trị mẫu, cần xác nhận
     durationMinutes: 120,
     minPax: 1,

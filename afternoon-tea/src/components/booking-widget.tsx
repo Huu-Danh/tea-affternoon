@@ -3,11 +3,12 @@
 import { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { addDays, parseISO, startOfMonth } from "date-fns";
-import { ArrowRight, Users } from "lucide-react";
+import { ArrowRight, Tag, Users } from "lucide-react";
 import type { Experience } from "@/data/experiences";
 import { venue } from "@/data/venue";
 import { bookingWindow, getSlots, toIsoDate, type Slot } from "@/lib/availability";
 import { formatLongDate, formatVnd } from "@/lib/format";
+import { packagePrice, pairSaving } from "@/lib/pricing";
 import { useBooking, useHydrated } from "@/lib/store";
 import { Calendar } from "./calendar";
 import { Stepper } from "./stepper";
@@ -21,6 +22,13 @@ export function BookingWidget({ exp }: { exp: Experience }) {
         <div>
           <p className="font-display text-3xl text-forest">{formatVnd(exp.pricePerGuest)}</p>
           <p className="text-xs text-muted">mỗi khách · chưa gồm phí phục vụ & VAT</p>
+          {exp.pairPrice && (
+            <p className="mt-2 inline-flex items-center gap-1.5 rounded-full bg-gold/10 px-3 py-1 text-xs text-ink">
+              <Tag className="size-3.5 text-gold" />
+              Combo 2 người <strong className="font-semibold">{formatVnd(exp.pairPrice)}</strong>
+              <span className="text-muted">· tiết kiệm {formatVnd(pairSaving(exp))}</span>
+            </p>
+          )}
         </div>
       </div>
       {hydrated ? <WidgetBody exp={exp} /> : <WidgetSkeleton />}
@@ -66,6 +74,7 @@ function WidgetBody({ exp }: { exp: Experience }) {
   const [month, setMonth] = useState(() => startOfMonth(date ? parseISO(date) : new Date()));
 
   const { first, last } = bookingWindow();
+  const price = packagePrice(exp, pax);
   const slots = date ? slotsOf(date) : [];
   const selectedSlot = slots.find((s) => s.time === time);
   const canContinue = !!date && !!selectedSlot && slotFits(selectedSlot, pax);
@@ -168,8 +177,16 @@ function WidgetBody({ exp }: { exp: Experience }) {
           <span className="text-muted">
             {formatVnd(exp.pricePerGuest)} × {pax} khách
           </span>
-          <span className="font-medium">{formatVnd(exp.pricePerGuest * pax)}</span>
+          <span className={cn(price.pairDiscount > 0 ? "text-muted line-through" : "font-medium")}>
+            {formatVnd(price.listBase)}
+          </span>
         </div>
+        {price.pairDiscount > 0 && (
+          <div className="flex items-center justify-between text-sm">
+            <span className="text-forest">Ưu đãi combo 2 người × {price.pairs}</span>
+            <span className="font-medium text-forest">{formatVnd(price.base)}</span>
+          </div>
+        )}
         <button type="button" onClick={next} disabled={!canContinue} className={cn(btn.primary, "w-full py-4 text-[15px]")}>
           Giữ chỗ & tiếp tục
           <ArrowRight className="size-4" />

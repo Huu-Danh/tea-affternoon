@@ -132,7 +132,10 @@ export function OrderSummary({
         </dl>
 
         <div className="mt-5 space-y-2 border-t border-line pt-5 text-sm">
-          <Line label={`${exp.name} × ${pax}`} value={t.base} />
+          <Line label={`${exp.name} × ${pax}`} value={t.listBase} />
+          {t.pairDiscount > 0 && (
+            <Line label={`Ưu đãi combo 2 người × ${t.pairs}`} value={-t.pairDiscount} highlight />
+          )}
           {t.addonLines.map((l) => (
             <Line key={l.id} label={`${l.name} × ${l.qty}`} value={l.amount} />
           ))}
@@ -148,9 +151,9 @@ export function OrderSummary({
   );
 }
 
-function Line({ label, value, muted }: { label: string; value: number; muted?: boolean }) {
+function Line({ label, value, muted, highlight }: { label: string; value: number; muted?: boolean; highlight?: boolean }) {
   return (
-    <div className={cn("flex justify-between gap-4", muted && "text-muted")}>
+    <div className={cn("flex justify-between gap-4", muted && "text-muted", highlight && "text-forest")}>
       <span>{label}</span>
       <span className="tabular-nums">{formatVnd(value)}</span>
     </div>

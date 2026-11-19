@@ -48,6 +48,11 @@ export function ExperienceCard({ exp, index }: { exp: Experience; index: number 
               {formatVnd(exp.pricePerGuest)}
               <span className="ml-1 font-sans text-xs text-muted">/ khách</span>
             </p>
+            {exp.pairPrice && (
+              <p className="mt-1 text-xs text-gold">
+                Combo 2 người: <span className="font-medium">{formatVnd(exp.pairPrice)}</span>
+              </p>
+            )}
           </div>
           <span className="flex size-11 items-center justify-center rounded-full border border-forest/30 text-forest transition group-hover:bg-forest group-hover:text-cream">
             <ArrowUpRight className="size-5" />
