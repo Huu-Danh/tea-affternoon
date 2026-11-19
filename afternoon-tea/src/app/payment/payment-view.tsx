@@ -101,7 +101,7 @@ function Payment({
       <div className="mt-10 grid gap-10 lg:grid-cols-[1fr_380px]">
         <div className="min-w-0 space-y-8">
           <div>
-            <Link href="/checkout/" className="inline-flex items-center gap-2 text-sm text-muted hover:text-forest">
+            <Link href="/checkout/" className="inline-flex items-center gap-2 text-sm text-muted hover:text-navy">
               <ArrowLeft className="size-4" />
               Sửa thông tin
             </Link>
@@ -111,7 +111,7 @@ function Payment({
             </div>
           </div>
 
-          <div className="rounded-2xl border border-line bg-paper p-5 text-sm">
+          <div className="rounded-sm border border-line bg-paper p-5 text-sm">
             <p className="text-muted">Người đặt</p>
             <p className="mt-1 font-medium">{draft.guest.fullName}</p>
             <p className="text-muted">
@@ -128,8 +128,8 @@ function Payment({
                   <label
                     key={m.id}
                     className={cn(
-                      "flex cursor-pointer items-center gap-4 rounded-2xl border p-4 transition",
-                      sel ? "border-forest bg-forest/5 ring-1 ring-forest" : "border-line bg-paper hover:border-ink/30",
+                      "flex cursor-pointer items-center gap-4 rounded-sm border p-4 transition",
+                      sel ? "border-navy bg-navy/5 ring-1 ring-navy" : "border-line bg-paper hover:border-ink/30",
                     )}
                   >
                     <input
@@ -142,8 +142,8 @@ function Payment({
                     />
                     <span
                       className={cn(
-                        "flex size-11 items-center justify-center rounded-xl",
-                        sel ? "bg-forest text-cream" : "bg-sand text-forest",
+                        "flex size-11 items-center justify-center rounded-xs",
+                        sel ? "bg-navy text-cream" : "bg-sand text-navy",
                       )}
                     >
                       <m.icon className="size-5" />
@@ -155,7 +155,7 @@ function Payment({
                     <span
                       className={cn(
                         "size-5 rounded-full border-2 transition",
-                        sel ? "border-forest bg-forest shadow-[inset_0_0_0_3px_var(--color-paper)]" : "border-line",
+                        sel ? "border-navy bg-navy shadow-[inset_0_0_0_3px_var(--color-paper)]" : "border-line",
                       )}
                     />
                   </label>
@@ -164,7 +164,7 @@ function Payment({
             </div>
           </fieldset>
 
-          <div className="flex gap-3 rounded-2xl bg-gold/10 p-4 text-sm text-ink/80">
+          <div className="flex gap-3 rounded-sm bg-gold/10 p-4 text-sm text-ink/80">
             <Info className="mt-0.5 size-4 shrink-0 text-gold" />
             Bản demo: bấm thanh toán sẽ giả lập chuyển sang cổng thanh toán và trả về kết quả thành công. Không phát sinh giao dịch thật.
           </div>
@@ -183,7 +183,7 @@ function Payment({
       <AnimatePresence>
         {processing && (
           <motion.div
-            className="fixed inset-0 z-50 flex items-center justify-center bg-forest-dark/70 p-4 backdrop-blur-sm"
+            className="fixed inset-0 z-50 flex items-center justify-center bg-navy-dark/70 p-4 backdrop-blur-sm"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
@@ -194,9 +194,9 @@ function Payment({
             <motion.div
               initial={{ scale: 0.95, y: 10 }}
               animate={{ scale: 1, y: 0 }}
-              className="w-full max-w-sm rounded-3xl bg-paper p-8 text-center"
+              className="w-full max-w-sm rounded-sm bg-paper p-8 text-center"
             >
-              <div className="mx-auto size-12 animate-spin rounded-full border-2 border-line border-t-forest" />
+              <div className="mx-auto size-12 animate-spin rounded-full border-2 border-line border-t-navy" />
               <p className="mt-6 font-display text-2xl">Đang xử lý thanh toán</p>
               <p className="mt-2 text-sm text-muted">
                 Đang kết nối {methods.find((m) => m.id === method)?.name}… Vui lòng không đóng trang.

@@ -1,11 +1,13 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { ArrowLeft, CalendarDays, Check, Clock, Users } from "lucide-react";
+import { ArrowLeft, ArrowRight, CalendarDays, Check, Clock, Users } from "lucide-react";
 import { BookingWidget } from "@/components/booking-widget";
-import { Photo } from "@/components/photo";
-import { btn, cn, eyebrow } from "@/components/ui";
-import { experiences, getExperience } from "@/data/experiences";
+import { Ornament, Photo } from "@/components/photo";
+import { Reveal, RevealMask } from "@/components/reveal";
+import { btn, cn } from "@/components/ui";
+import { experiences, getExperience, type Experience } from "@/data/experiences";
+import { venue } from "@/data/venue";
 import { formatDays, formatDuration, formatVnd } from "@/lib/format";
 
 export const dynamicParams = false;
@@ -21,6 +23,37 @@ export async function generateMetadata({ params }: PageProps<"/experiences/[slug
   return { title: exp.name, description: exp.tagline };
 }
 
+/** Thực đơn trình bày như một tấm thiệp in */
+function MenuCard({ exp }: { exp: Experience }) {
+  return (
+    <div className="relative bg-paper px-6 py-14 text-center shadow-[0_30px_60px_-40px_rgba(16,25,45,0.35)] sm:px-14">
+      <div className="pointer-events-none absolute inset-3 border border-gold/45" aria-hidden />
+      <div className="pointer-events-none absolute inset-[18px] border border-gold/20" aria-hidden />
+      <p className="font-script text-5xl text-gold">Menu</p>
+      <p className="mt-2 text-[10px] tracking-[0.4em] text-muted uppercase">
+        {exp.name} · {venue.lounge}
+      </p>
+      <Ornament className="mx-auto mt-6 text-gold" />
+      <div className="mt-10 space-y-10">
+        {exp.menu.map((sec) => (
+          <div key={sec.title}>
+            <h3 className="text-[11px] font-medium tracking-[0.35em] text-navy uppercase">{sec.title}</h3>
+            <ul className="mt-4 space-y-2">
+              {sec.items.map((it) => (
+                <li key={it} className="font-display text-xl font-light text-ink/85 italic">
+                  {it}
+                </li>
+              ))}
+            </ul>
+            <span className="mx-auto mt-6 block size-1.5 rotate-45 bg-gold/60" aria-hidden />
+          </div>
+        ))}
+      </div>
+      <p className="mt-4 text-[11px] text-muted">Thực đơn có thể thay đổi theo mùa.</p>
+    </div>
+  );
+}
+
 export default async function ExperiencePage({ params }: PageProps<"/experiences/[slug]">) {
   const { slug } = await params;
   const exp = getExperience(slug);
@@ -31,89 +64,84 @@ export default async function ExperiencePage({ params }: PageProps<"/experiences
   return (
     <>
       <section className="mx-auto max-w-7xl px-4 pt-8 sm:px-6 lg:px-8">
-        <Link href="/#experiences" className="inline-flex items-center gap-2 text-sm text-muted hover:text-forest">
-          <ArrowLeft className="size-4" />
+        <Link
+          href="/#experiences"
+          className="inline-flex items-center gap-2 text-[11px] tracking-[0.25em] text-muted uppercase transition hover:text-navy"
+        >
+          <ArrowLeft className="size-3.5" />
           Tất cả trải nghiệm
         </Link>
-        <Photo
-          src={exp.image}
-          alt={exp.name}
-          tone={exp.tone}
-          art="stand"
-          fit="contain"
-          className="mt-6 aspect-[16/9] rounded-[2rem] sm:aspect-[21/8]"
-        >
-          {exp.badge && (
-            <span className="absolute left-6 top-6 rounded-full bg-paper/90 px-4 py-1.5 text-xs font-medium uppercase tracking-wider text-forest">
-              {exp.badge}
-            </span>
-          )}
-        </Photo>
+        <RevealMask className="relative mt-6 overflow-hidden rounded-xs">
+          <Photo
+            src={exp.image}
+            alt={exp.name}
+            tone={exp.tone}
+            art="stand"
+            fit="contain"
+            kenBurns
+            className="aspect-[16/9] sm:aspect-[21/8]"
+          >
+            <span className="pointer-events-none absolute inset-3 border border-paper/30 sm:inset-5" />
+            {exp.badge && (
+              <span className="absolute top-7 left-7 bg-navy/90 px-3.5 py-1.5 text-[10px] font-medium tracking-[0.25em] text-gold-soft uppercase sm:top-9 sm:left-9">
+                {exp.badge}
+              </span>
+            )}
+          </Photo>
+        </RevealMask>
       </section>
 
-      <section className="mx-auto grid max-w-7xl gap-12 px-4 py-12 sm:px-6 lg:grid-cols-[1fr_420px] lg:gap-16 lg:px-8 lg:py-16">
+      <section className="mx-auto grid max-w-7xl gap-14 px-4 py-14 sm:px-6 lg:grid-cols-[1fr_420px] lg:gap-20 lg:px-8 lg:py-20">
         <div className="min-w-0">
-          <p className={eyebrow}>Afternoon Tea</p>
-          <h1 className="mt-3 font-display text-5xl leading-tight sm:text-6xl">{exp.name}</h1>
-          <p className="mt-3 text-lg text-muted">{exp.tagline}</p>
+          <Reveal>
+            <p className="font-script text-4xl text-gold sm:text-5xl">Afternoon Tea</p>
+            <h1 className="mt-2 font-display text-5xl leading-tight font-light sm:text-6xl lg:text-7xl">{exp.name}</h1>
+            <p className="mt-4 text-lg text-muted">{exp.tagline}</p>
+            <Ornament className="mt-7 text-gold" />
 
-          <div className="mt-8 flex flex-wrap gap-3">
-            {[
-              { icon: CalendarDays, text: formatDays(exp.daysOfWeek) },
-              { icon: Clock, text: `${exp.timeSlots[0]} – ${exp.timeSlots.at(-1)} · ${formatDuration(exp.durationMinutes)}` },
-              { icon: Users, text: `${exp.minPax} – ${exp.maxPax} khách` },
-            ].map(({ icon: Icon, text }) => (
-              <span key={text} className="inline-flex items-center gap-2 rounded-full border border-line bg-paper px-4 py-2 text-sm">
-                <Icon className="size-4 text-gold" />
-                {text}
-              </span>
-            ))}
-          </div>
-
-          <p className="mt-10 text-[17px] leading-relaxed text-ink/85">{exp.description}</p>
-
-          <ul className="mt-8 space-y-3">
-            {exp.highlights.map((h) => (
-              <li key={h} className="flex gap-3">
-                <span className="mt-0.5 flex size-5 shrink-0 items-center justify-center rounded-full bg-forest/10 text-forest">
-                  <Check className="size-3" />
-                </span>
-                {h}
-              </li>
-            ))}
-          </ul>
-
-          <div className="mt-16">
-            <h2 className="font-display text-4xl">Thực đơn</h2>
-            <div className="mt-8 grid gap-6 sm:grid-cols-2">
-              {exp.menu.map((sec) => (
-                <div key={sec.title} className="rounded-3xl border border-line bg-paper p-7">
-                  <h3 className="font-display text-2xl text-forest">{sec.title}</h3>
-                  <ul className="mt-4 space-y-2.5 text-[15px] text-ink/80">
-                    {sec.items.map((it) => (
-                      <li key={it} className="flex gap-3">
-                        <span className="mt-2.5 h-px w-3 shrink-0 bg-gold" />
-                        {it}
-                      </li>
-                    ))}
-                  </ul>
+            <dl className="mt-9 grid grid-cols-3 divide-x divide-line border-y border-line">
+              {[
+                { icon: CalendarDays, label: "Phục vụ", text: formatDays(exp.daysOfWeek) },
+                { icon: Clock, label: "Thời lượng", text: formatDuration(exp.durationMinutes) },
+                { icon: Users, label: "Số khách", text: `${exp.minPax} – ${exp.maxPax}` },
+              ].map(({ icon: Icon, label, text }) => (
+                <div key={label} className="flex flex-col items-center gap-1.5 py-5 text-center">
+                  <Icon className="size-4 text-gold" strokeWidth={1.5} />
+                  <dt className="text-[10px] tracking-[0.25em] text-muted uppercase">{label}</dt>
+                  <dd className="font-display text-xl">{text}</dd>
                 </div>
               ))}
-            </div>
-            <p className="mt-4 text-xs text-muted">Thực đơn có thể thay đổi theo mùa.</p>
-          </div>
+            </dl>
+          </Reveal>
 
-          <div className="mt-16">
-            <h2 className="font-display text-4xl">Điều khoản</h2>
-            <ul className="mt-6 space-y-3 text-[15px] text-muted">
+          <Reveal delay={0.1}>
+            <p className="mt-10 text-[17px] leading-[1.8] text-ink/85">{exp.description}</p>
+            <ul className="mt-8 grid gap-3 sm:grid-cols-2">
+              {exp.highlights.map((h) => (
+                <li key={h} className="flex gap-3 text-[15px]">
+                  <Check className="mt-0.5 size-4 shrink-0 text-gold" strokeWidth={2} />
+                  {h}
+                </li>
+              ))}
+            </ul>
+          </Reveal>
+
+          <Reveal className="mt-20">
+            <MenuCard exp={exp} />
+          </Reveal>
+
+          <Reveal className="mt-20">
+            <h2 className="font-display text-4xl font-light">Điều khoản</h2>
+            <Ornament className="mt-5 text-gold" />
+            <ul className="mt-7 space-y-3 text-[15px] text-muted">
               {exp.terms.map((t) => (
                 <li key={t} className="flex gap-3">
-                  <span className="mt-2 size-1.5 shrink-0 rounded-full bg-gold" />
+                  <span className="mt-2.5 size-1.5 shrink-0 rotate-45 bg-gold" />
                   {t}
                 </li>
               ))}
             </ul>
-          </div>
+          </Reveal>
         </div>
 
         <div className="lg:sticky lg:top-28 lg:self-start">
@@ -125,36 +153,54 @@ export default async function ExperiencePage({ params }: PageProps<"/experiences
       <div className="sticky bottom-0 z-30 border-t border-line bg-paper/95 px-4 py-3 backdrop-blur lg:hidden">
         <div className="flex items-center justify-between gap-4">
           <div>
-            <p className="font-display text-2xl leading-none text-forest">{formatVnd(exp.pricePerGuest)}</p>
-            <p className="text-xs text-muted">mỗi khách</p>
+            <p className="font-display text-2xl leading-none text-navy">{formatVnd(exp.pricePerGuest)}</p>
+            <p className="mt-1 text-xs text-muted">
+              mỗi khách{exp.pairPrice ? ` · combo 2 người ${formatVnd(exp.pairPrice)}` : ""}
+            </p>
           </div>
-          <a href="#book" className={cn(btn.primary, "px-8")}>
+          <a href="#book" className={cn(btn.primary, "px-6")}>
             Chọn ngày & giờ
           </a>
         </div>
       </div>
 
       {others.length > 0 && (
-      <section className="border-t border-line bg-sand/50">
-        <div className="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8">
-          <h2 className="font-display text-4xl">{others.length === 1 ? "Lựa chọn còn lại" : "Có thể bạn cũng thích"}</h2>
-          <div className="mt-10 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-            {others.map((o) => (
-              <Link
-                key={o.slug}
-                href={`/experiences/${o.slug}/`}
-                className="group flex items-center gap-5 rounded-3xl border border-line bg-paper p-4 transition hover:shadow-md"
-              >
-                <Photo src={o.image} alt={o.name} tone={o.tone} art="cup" className="size-24 shrink-0 rounded-2xl" />
-                <div>
-                  <p className="font-display text-2xl leading-tight group-hover:text-forest">{o.name}</p>
-                  <p className="mt-1 text-sm text-muted">từ {formatVnd(o.pricePerGuest)}</p>
-                </div>
-              </Link>
-            ))}
+        <section className="border-t border-line bg-sand/50">
+          <div className="mx-auto max-w-7xl px-4 py-24 text-center sm:px-6 lg:px-8">
+            <p className="font-script text-4xl text-gold">You may also like</p>
+            <h2 className="mt-2 font-display text-4xl font-light">
+              {others.length === 1 ? "Lựa chọn còn lại" : "Có thể bạn cũng thích"}
+            </h2>
+            <Ornament className="mx-auto mt-5 text-gold" />
+            <div className="mt-12 flex flex-wrap justify-center gap-6">
+              {others.map((o) => (
+                <Link
+                  key={o.slug}
+                  href={`/experiences/${o.slug}/`}
+                  className="group flex w-full max-w-lg items-center gap-6 bg-paper p-4 text-left ring-1 ring-line transition duration-500 hover:shadow-[0_30px_60px_-40px_rgba(16,25,45,0.5)] hover:ring-gold/40"
+                >
+                  <div className="overflow-hidden">
+                    <Photo
+                      src={o.image}
+                      alt={o.name}
+                      tone={o.tone}
+                      art="cup"
+                      className="size-28 shrink-0 transition-transform duration-[1.2s] group-hover:scale-110"
+                    />
+                  </div>
+                  <div className="flex-1">
+                    <p className="font-display text-3xl leading-tight font-light group-hover:text-navy">{o.name}</p>
+                    <p className="mt-1 text-sm text-muted">từ {formatVnd(o.pricePerGuest)} / khách</p>
+                    <span className="mt-3 inline-flex items-center gap-2 text-[10px] tracking-[0.25em] text-navy uppercase">
+                      Xem chi tiết
+                      <ArrowRight className="size-3 transition-transform group-hover:translate-x-1" />
+                    </span>
+                  </div>
+                </Link>
+              ))}
+            </div>
           </div>
-        </div>
-      </section>
+        </section>
       )}
     </>
   );

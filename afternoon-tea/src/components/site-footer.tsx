@@ -1,55 +1,55 @@
 import Link from "next/link";
-import { Clock, Mail, MapPin, Phone } from "lucide-react";
 import { venue } from "@/data/venue";
 import { withBasePath } from "@/lib/base-path";
+import { Ornament } from "./photo";
 
 export function SiteFooter() {
   return (
-    <footer className="bg-forest-dark text-cream/80">
-      <div className="mx-auto grid max-w-7xl gap-10 px-4 py-16 sm:px-6 md:grid-cols-3 lg:px-8">
-        <div>
+    <footer className="lattice bg-navy-dark text-cream/75">
+      <div className="mx-auto max-w-7xl px-4 pt-20 pb-12 sm:px-6 lg:px-8">
+        <div className="flex flex-col items-center text-center">
           {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src={withBasePath("/logo-white.png")} alt={venue.name} width={306} height={214} className="h-16 w-auto" />
-          <p className="mt-4 text-[10px] uppercase tracking-[0.32em] text-gold-soft">
-            {venue.lounge} · Afternoon Tea
-          </p>
-          <p className="mt-5 max-w-xs text-sm leading-relaxed">{venue.description}</p>
+          <img src={withBasePath("/logo-white.webp")} alt={venue.name} width={306} height={214} className="h-16 w-auto" />
+          <p className="mt-5 font-script text-4xl text-gold-soft">Afternoon Tea</p>
+          <p className="mt-1 text-[10px] tracking-[0.4em] text-cream/50 uppercase">{venue.lounge}</p>
+          <Ornament className="mt-6 text-gold-soft/50" />
         </div>
 
-        <ul className="space-y-3 text-sm">
-          <li className="flex gap-3">
-            <MapPin className="mt-0.5 size-4 shrink-0 text-gold-soft" />
-            {venue.address}
-          </li>
-          <li className="flex gap-3">
-            <Clock className="mt-0.5 size-4 shrink-0 text-gold-soft" />
-            {venue.hours}
-          </li>
-          <li className="flex gap-3">
-            <Phone className="mt-0.5 size-4 shrink-0 text-gold-soft" />
-            <a href={`tel:${venue.phone.replace(/\s/g, "")}`} className="hover:text-cream">
-              {venue.phone}
-            </a>
-          </li>
-          <li className="flex gap-3">
-            <Mail className="mt-0.5 size-4 shrink-0 text-gold-soft" />
-            <a href={`mailto:${venue.email}`} className="hover:text-cream">
-              {venue.email}
-            </a>
-          </li>
-        </ul>
+        <div className="mt-14 grid gap-10 text-center text-sm md:grid-cols-3">
+          <div>
+            <p className="text-[10px] tracking-[0.3em] text-gold-soft uppercase">Địa chỉ</p>
+            <p className="mt-3 leading-relaxed">{venue.address}</p>
+          </div>
+          <div>
+            <p className="text-[10px] tracking-[0.3em] text-gold-soft uppercase">Giờ phục vụ</p>
+            <p className="mt-3">{venue.hours}</p>
+          </div>
+          <div>
+            <p className="text-[10px] tracking-[0.3em] text-gold-soft uppercase">Liên hệ</p>
+            <p className="mt-3">
+              <a href={`tel:${venue.phone.replace(/\s/g, "")}`} className="transition hover:text-gold-soft">
+                {venue.phone}
+              </a>
+            </p>
+            <p className="mt-1">
+              <a href={`mailto:${venue.email}`} className="transition hover:text-gold-soft">
+                {venue.email}
+              </a>
+            </p>
+          </div>
+        </div>
 
-        <div className="text-sm md:text-right">
-          <Link href="/#experiences" className="font-display text-2xl text-cream hover:text-gold-soft">
-            Đặt chỗ trà chiều →
+        <div className="mt-14 text-center">
+          <Link
+            href="/#experiences"
+            className="inline-flex border border-gold-soft/40 px-8 py-3.5 text-[11px] tracking-[0.25em] text-cream uppercase transition hover:border-gold-soft hover:bg-cream/5"
+          >
+            Đặt chỗ trà chiều
           </Link>
-          <p className="mt-4 text-cream/50">
-            Bản demo frontend. Dữ liệu và thanh toán đều là giả lập.
-          </p>
         </div>
       </div>
-      <div className="border-t border-cream/10 py-6 text-center text-xs text-cream/40">
-        © {new Date().getFullYear()} {venue.name}
+      <div className="border-t border-cream/10 py-6 text-center text-[11px] text-cream/35">
+        © {new Date().getFullYear()} {venue.name} · Bản demo frontend: dữ liệu và thanh toán đều là giả lập.
       </div>
     </footer>
   );

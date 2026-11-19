@@ -34,7 +34,7 @@ export function ConfirmationView() {
           initial={{ scale: 0.4, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}
           transition={{ type: "spring", stiffness: 260, damping: 18 }}
-          className="mx-auto flex size-20 items-center justify-center rounded-full bg-forest text-cream"
+          className="mx-auto flex size-20 items-center justify-center rounded-full bg-navy text-cream"
         >
           <Check className="size-9" strokeWidth={1.6} />
         </motion.div>
@@ -43,10 +43,10 @@ export function ConfirmationView() {
           Đặt chỗ đã được xác nhận. Email xác nhận đã được gửi tới {booking.guest.email} (giả lập).
         </p>
         <p className="mt-8 text-[11px] uppercase tracking-[0.3em] text-muted">Mã đặt chỗ</p>
-        <p className="mt-2 font-display text-4xl tracking-[0.15em] text-forest">{booking.code}</p>
+        <p className="mt-2 font-display text-4xl tracking-[0.15em] text-navy">{booking.code}</p>
       </div>
 
-      <div className="mt-10 rounded-3xl border border-line bg-paper p-6 sm:p-8">
+      <div className="mt-10 rounded-sm border border-line bg-paper p-6 sm:p-8">
         <BookingDetails b={booking} />
         <p className="mt-6 border-t border-line pt-5 text-sm text-muted">
           {venue.lounge}, {venue.name} · {venue.address}

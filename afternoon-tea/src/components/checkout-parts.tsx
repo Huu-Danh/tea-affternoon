@@ -24,8 +24,8 @@ export function CheckoutSteps({ current }: { current: 1 | 2 | 3 | 4 }) {
             <span
               className={cn(
                 "flex size-7 shrink-0 items-center justify-center rounded-full border text-xs",
-                done && "border-forest bg-forest text-cream",
-                active && "border-forest text-forest",
+                done && "border-navy bg-navy text-cream",
+                active && "border-navy text-navy",
                 !done && !active && "border-line text-muted",
               )}
               aria-current={active ? "step" : undefined}
@@ -54,7 +54,7 @@ export function HoldTimer({ seconds }: { seconds: number }) {
   return (
     <div
       className={cn(
-        "flex items-center gap-3 rounded-2xl border px-4 py-3 text-sm",
+        "flex items-center gap-3 rounded-sm border px-4 py-3 text-sm",
         urgent ? "border-danger/30 bg-danger/5 text-danger" : "border-gold/30 bg-gold/5 text-ink",
       )}
       role="timer"
@@ -112,7 +112,7 @@ export function OrderSummary({
 }) {
   const t = computeTotals(exp, pax, addons);
   return (
-    <aside className="overflow-hidden rounded-3xl border border-line bg-paper">
+    <aside className="overflow-hidden rounded-sm border border-line bg-paper">
       <Photo src={exp.image} alt={exp.name} tone={exp.tone} art="stand" className="h-32" />
       <div className="p-6">
         <p className="font-display text-2xl leading-tight">{exp.name}</p>
@@ -144,7 +144,7 @@ export function OrderSummary({
         </div>
         <div className="mt-4 flex items-baseline justify-between border-t border-line pt-4">
           <span className="text-sm font-medium">Tổng cộng</span>
-          <span className="font-display text-3xl text-forest">{formatVnd(t.total)}</span>
+          <span className="font-display text-3xl text-navy">{formatVnd(t.total)}</span>
         </div>
       </div>
     </aside>
@@ -153,7 +153,7 @@ export function OrderSummary({
 
 function Line({ label, value, muted, highlight }: { label: string; value: number; muted?: boolean; highlight?: boolean }) {
   return (
-    <div className={cn("flex justify-between gap-4", muted && "text-muted", highlight && "text-forest")}>
+    <div className={cn("flex justify-between gap-4", muted && "text-muted", highlight && "text-navy")}>
       <span>{label}</span>
       <span className="tabular-nums">{formatVnd(value)}</span>
     </div>

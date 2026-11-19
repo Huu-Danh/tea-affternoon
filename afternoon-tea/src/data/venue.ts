@@ -16,9 +16,12 @@ export const venue = {
   vatRate: 0.08,
   /** Nhạc nền tự phát (xem components/background-music.tsx) */
   music: {
-    src: "/music/saturn-3-music-clair-de-lune-debussy-soft-piano-411227.mp3",
+    src: "/music/clair-de-lune.mp3",
     title: "Clair de Lune – Debussy",
-    /** 0 → 1 (1 là tối đa của trình duyệt) */
-    volume: 0.8,
+    /**
+     * 0 → 1 (1 là tối đa của trình duyệt). Các file nhạc đã được chuẩn hoá
+     * cùng độ to -16 LUFS nên một mức âm lượng dùng chung cho mọi bài.
+     */
+    volume: 0.6,
   },
 } as const;

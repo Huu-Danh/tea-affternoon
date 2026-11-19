@@ -39,13 +39,13 @@ export function MyBookingsView() {
           const cancelled = b.status === "cancelled";
           const freeCancel = hoursLeft >= 24;
           return (
-            <li key={b.code} className={cn("rounded-3xl border border-line bg-paper p-6 sm:p-8", (cancelled || past) && "opacity-60")}>
+            <li key={b.code} className={cn("rounded-sm border border-line bg-paper p-6 sm:p-8", (cancelled || past) && "opacity-60")}>
               <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
-                <p className="font-display text-2xl tracking-[0.12em] text-forest">{b.code}</p>
+                <p className="font-display text-2xl tracking-[0.12em] text-navy">{b.code}</p>
                 <span
                   className={cn(
                     "rounded-full px-3 py-1 text-xs font-medium",
-                    cancelled ? "bg-danger/10 text-danger" : past ? "bg-sand text-muted" : "bg-forest/10 text-forest",
+                    cancelled ? "bg-danger/10 text-danger" : past ? "bg-sand text-muted" : "bg-navy/10 text-navy",
                   )}
                 >
                   {cancelled ? "Đã huỷ" : past ? "Đã diễn ra" : "Đã xác nhận"}

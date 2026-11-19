@@ -50,8 +50,8 @@ export function CheckoutView() {
 export function PageSkeleton() {
   return (
     <div className="mx-auto grid max-w-6xl animate-pulse gap-10 px-4 py-12 lg:grid-cols-[1fr_380px]" aria-hidden>
-      <div className="h-[600px] rounded-3xl bg-sand" />
-      <div className="h-96 rounded-3xl bg-sand" />
+      <div className="h-[600px] rounded-sm bg-sand" />
+      <div className="h-96 rounded-sm bg-sand" />
     </div>
   );
 }
@@ -152,7 +152,7 @@ function CheckoutForm({ draft, exp }: { draft: Draft; exp: Experience }) {
               </select>
             </Field>
             {exp.perks?.tableDecor && hasOccasion && (
-              <p className="flex gap-3 rounded-2xl bg-gold/10 p-4 text-sm text-ink/80">
+              <p className="flex gap-3 rounded-sm bg-gold/10 p-4 text-sm text-ink/80">
                 <Sparkles className="mt-0.5 size-4 shrink-0 text-gold" />
                 Gói {exp.name} bao gồm trang trí bàn cho dịp {occasion.toLowerCase()} của bạn.
               </p>
@@ -184,14 +184,14 @@ function CheckoutForm({ draft, exp }: { draft: Draft; exp: Experience }) {
                   <div
                     key={a.id}
                     className={cn(
-                      "flex items-center justify-between gap-4 rounded-2xl border p-4 transition",
-                      qty > 0 ? "border-forest bg-forest/5" : "border-line bg-paper",
+                      "flex items-center justify-between gap-4 rounded-sm border p-4 transition",
+                      qty > 0 ? "border-navy bg-navy/5" : "border-line bg-paper",
                     )}
                   >
                     <div className="min-w-0">
                       <p className="font-medium">{a.name}</p>
                       <p className="text-sm text-muted">{a.description}</p>
-                      <p className="mt-1 text-sm text-forest">{formatVnd(a.price)}</p>
+                      <p className="mt-1 text-sm text-navy">{formatVnd(a.price)}</p>
                     </div>
                     <Stepper
                       size="sm"
@@ -207,16 +207,16 @@ function CheckoutForm({ draft, exp }: { draft: Draft; exp: Experience }) {
             </div>
           </fieldset>
 
-          <div className="space-y-3 rounded-2xl border border-line bg-paper p-5 text-sm">
+          <div className="space-y-3 rounded-sm border border-line bg-paper p-5 text-sm">
             <label className="flex cursor-pointer gap-3">
-              <input type="checkbox" className="mt-0.5 size-4 accent-forest" {...register("agree")} />
+              <input type="checkbox" className="mt-0.5 size-4 accent-navy" {...register("agree")} />
               <span>
                 Tôi đồng ý với điều khoản đặt chỗ và chính sách huỷ (miễn phí huỷ trước 24 giờ).
                 {errors.agree && <span className="mt-1 block text-danger">{errors.agree.message}</span>}
               </span>
             </label>
             <label className="flex cursor-pointer gap-3 text-muted">
-              <input type="checkbox" className="mt-0.5 size-4 accent-forest" {...register("marketing")} />
+              <input type="checkbox" className="mt-0.5 size-4 accent-navy" {...register("marketing")} />
               Nhận thông tin ưu đãi qua email.
             </label>
           </div>

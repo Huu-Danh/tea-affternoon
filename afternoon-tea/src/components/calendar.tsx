@@ -94,8 +94,8 @@ export function Calendar({
               className={cn(
                 "relative aspect-square rounded-full text-sm tabular-nums transition",
                 !inMonth && "invisible",
-                isSel && "bg-forest font-medium text-cream",
-                !isSel && available && "text-ink hover:bg-forest/10",
+                isSel && "bg-navy font-medium text-cream",
+                !isSel && available && "text-ink hover:bg-navy/10",
                 !isSel && !available && "cursor-not-allowed text-ink/25 line-through decoration-ink/15",
                 isToday(d) && !isSel && "font-semibold",
               )}

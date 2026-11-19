@@ -17,10 +17,10 @@ import { btn, cn } from "./ui";
 export function BookingWidget({ exp }: { exp: Experience }) {
   const hydrated = useHydrated();
   return (
-    <div id="book" className="rounded-3xl border border-line bg-paper p-6 shadow-[0_24px_60px_-40px_rgba(35,64,58,0.5)] sm:p-7">
+    <div id="book" className="rounded-sm border border-line bg-paper p-6 shadow-[0_24px_60px_-40px_rgba(35,64,58,0.5)] sm:p-7">
       <div className="flex items-baseline justify-between border-b border-line pb-5">
         <div>
-          <p className="font-display text-3xl text-forest">{formatVnd(exp.pricePerGuest)}</p>
+          <p className="font-display text-3xl text-navy">{formatVnd(exp.pricePerGuest)}</p>
           <p className="text-xs text-muted">mỗi khách · chưa gồm phí phục vụ & VAT</p>
           {exp.pairPrice && (
             <p className="mt-2 inline-flex items-center gap-1.5 rounded-full bg-gold/10 px-3 py-1 text-xs text-ink">
@@ -39,9 +39,9 @@ export function BookingWidget({ exp }: { exp: Experience }) {
 function WidgetSkeleton() {
   return (
     <div className="animate-pulse space-y-4 pt-6" aria-hidden>
-      <div className="h-10 rounded-xl bg-sand" />
-      <div className="h-64 rounded-xl bg-sand" />
-      <div className="h-24 rounded-xl bg-sand" />
+      <div className="h-10 rounded-xs bg-sand" />
+      <div className="h-64 rounded-xs bg-sand" />
+      <div className="h-24 rounded-xs bg-sand" />
     </div>
   );
 }
@@ -100,7 +100,7 @@ function WidgetBody({ exp }: { exp: Experience }) {
     <div className="space-y-7 pt-6">
       <section>
         <h3 className="mb-3 text-xs font-medium uppercase tracking-[0.2em] text-muted">1 · Số khách</h3>
-        <div className="flex items-center justify-between rounded-2xl border border-line px-4 py-3">
+        <div className="flex items-center justify-between rounded-sm border border-line px-4 py-3">
           <span className="inline-flex items-center gap-2 text-sm">
             <Users className="size-4 text-gold" />
             {pax} khách
@@ -145,11 +145,11 @@ function WidgetBody({ exp }: { exp: Experience }) {
                     onClick={() => setTime(s.time)}
                     aria-pressed={sel}
                     className={cn(
-                      "flex flex-col items-center rounded-2xl border px-2 py-3 transition",
+                      "flex flex-col items-center rounded-sm border px-2 py-3 transition",
                       sel
-                        ? "border-forest bg-forest text-cream"
+                        ? "border-navy bg-navy text-cream"
                         : fits
-                          ? "border-line hover:border-forest"
+                          ? "border-line hover:border-navy"
                           : "cursor-not-allowed border-line/60 bg-sand/40 text-ink/35",
                     )}
                   >
@@ -183,8 +183,8 @@ function WidgetBody({ exp }: { exp: Experience }) {
         </div>
         {price.pairDiscount > 0 && (
           <div className="flex items-center justify-between text-sm">
-            <span className="text-forest">Ưu đãi combo 2 người × {price.pairs}</span>
-            <span className="font-medium text-forest">{formatVnd(price.base)}</span>
+            <span className="text-navy">Ưu đãi combo 2 người × {price.pairs}</span>
+            <span className="font-medium text-navy">{formatVnd(price.base)}</span>
           </div>
         )}
         <button type="button" onClick={next} disabled={!canContinue} className={cn(btn.primary, "w-full py-4 text-[15px]")}>

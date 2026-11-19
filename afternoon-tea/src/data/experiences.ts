@@ -1,4 +1,4 @@
-export type Tone = "forest" | "blush" | "gold" | "ink";
+export type Tone = "navy" | "blush" | "gold" | "ink";
 
 export type MenuSection = {
   title: string;
@@ -52,8 +52,8 @@ export const experiences: Experience[] = [
       "European Classic được xây dựng dành cho khách muốn trải nghiệm Afternoon Tea theo hướng đầy đủ nhưng đơn giản hơn. Gói tập trung vào những giá trị cơ bản của Afternoon Tea: thưởng trà, dùng bánh và món mặn, trò chuyện và thư giãn tại Me Linh Lounge.",
     pricePerGuest: 499000,
     pairPrice: 949000,
-    offerPoster: "/images/clasic.jpg",
-    music: "/music/European Classic.mp3",
+    offerPoster: "/images/offer-european-classic.webp",
+    music: "/music/european-classic.mp3",
     // TODO: thời lượng, số khách và sức chứa là giá trị mẫu, cần xác nhận
     durationMinutes: 120,
     minPax: 1,
@@ -62,8 +62,8 @@ export const experiences: Experience[] = [
     // Khung phục vụ 14:00–17:00, mỗi lượt 2 giờ
     timeSlots: ["14:00", "14:30", "15:00"],
     capacityPerSlot: 12,
-    tone: "forest",
-    image: "/images/european-classic.jpg",
+    tone: "navy",
+    image: "/images/european-classic.webp",
     highlights: [
       "1 lựa chọn trà",
       "2 món mặn",
@@ -88,8 +88,8 @@ export const experiences: Experience[] = [
       "European Premium dành cho khách muốn một buổi Afternoon Tea trọn vẹn hơn: món mặn dùng nguyên liệu cao cấp như cá hồi xông khói và trứng cá, thêm nhiều loại bánh như macaron, chocolate éclair và raspberry mousse cake, lựa chọn trà hoa cúc bên cạnh trà Earl Grey, cùng welcome drink. Với khách có dịp đặc biệt, nhóm có thể chuẩn bị thiệp chúc mừng và trang trí bàn.",
     pricePerGuest: 599000,
     pairPrice: 1139000,
-    offerPoster: "/images/premium.jpg",
-    music: "/music/European Premium.mp3",
+    offerPoster: "/images/offer-european-premium.webp",
+    music: "/music/european-premium.mp3",
     // TODO: thời lượng, số khách và sức chứa là giá trị mẫu, cần xác nhận
     durationMinutes: 120,
     minPax: 1,
@@ -99,7 +99,7 @@ export const experiences: Experience[] = [
     capacityPerSlot: 8,
     badge: "Premium",
     tone: "gold",
-    image: "/images/european-premium.jpg",
+    image: "/images/european-premium.webp",
     highlights: [
       "Welcome drink",
       "Trà Earl Grey hoặc trà hoa cúc",

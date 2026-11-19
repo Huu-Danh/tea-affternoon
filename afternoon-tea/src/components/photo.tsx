@@ -3,10 +3,10 @@ import { withBasePath } from "@/lib/base-path";
 import { cn } from "./ui";
 
 const tones: Record<Tone, string> = {
-  forest: "from-[#35574f] via-[#23403a] to-[#132420] text-gold-soft",
-  gold: "from-[#d6b47c] via-[#b08d57] to-[#7a5c31] text-paper",
-  blush: "from-[#f3e2d6] via-[#e3c2b0] to-[#c19280] text-[#7a4a3a]",
-  ink: "from-[#4a3f3a] via-[#2f2825] to-[#1a1514] text-gold-soft",
+  navy: "from-[#2d4170] via-[#1b2a4a] to-[#0d1526] text-gold-soft",
+  gold: "from-[#d9c08f] via-[#ad8d58] to-[#6f5530] text-paper",
+  blush: "from-[#f4e6dc] via-[#e3c8b8] to-[#bf9686] text-[#6f4436]",
+  ink: "from-[#3a3f52] via-[#232838] to-[#121520] text-gold-soft",
 };
 
 type Art = "cup" | "stand" | "pot";
@@ -18,11 +18,12 @@ type Art = "cup" | "stand" | "pot";
 export function Photo({
   src,
   alt,
-  tone = "forest",
+  tone = "navy",
   art = "cup",
   className,
   artClassName,
   fit = "cover",
+  kenBurns = false,
   children,
 }: {
   src?: string;
@@ -37,32 +38,55 @@ export function Photo({
    * Dùng cho khung rộng khi ảnh nhỏ hoặc ảnh dọc để không bị cắt/vỡ.
    */
   fit?: "cover" | "contain";
+  /** Zoom rất chậm (hiệu ứng Ken Burns) */
+  kenBurns?: boolean;
   children?: React.ReactNode;
 }) {
+  const motionCls = kenBurns ? "animate-kenburns will-change-transform" : undefined;
+  let media: React.ReactNode;
+  if (src && fit === "contain") {
+    media = (
+      <>
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
+          src={withBasePath(src)}
+          alt=""
+          aria-hidden
+          className={cn("absolute inset-0 h-full w-full scale-110 object-cover opacity-70 blur-2xl", motionCls)}
+        />
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img src={withBasePath(src)} alt={alt} className="absolute inset-0 h-full w-full object-contain drop-shadow-2xl" />
+      </>
+    );
+  } else if (src) {
+    media = (
+      // eslint-disable-next-line @next/next/no-img-element
+      <img src={withBasePath(src)} alt={alt} className={cn("absolute inset-0 h-full w-full object-cover", motionCls)} loading="lazy" />
+    );
+  } else {
+    media = (
+      <div role="img" aria-label={alt} className={cn("grain absolute inset-0 flex items-center justify-center", motionCls)}>
+        <Illustration art={art} className={artClassName ?? "h-[46%] max-h-56 w-auto opacity-70"} />
+      </div>
+    );
+  }
   return (
     <div className={cn("relative overflow-hidden bg-linear-to-br", tones[tone], className)}>
-      {src && fit === "contain" ? (
-        <>
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
-            src={withBasePath(src)}
-            alt=""
-            aria-hidden
-            className="absolute inset-0 h-full w-full scale-110 object-cover opacity-70 blur-2xl"
-          />
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src={withBasePath(src)} alt={alt} className="absolute inset-0 h-full w-full object-contain drop-shadow-2xl" />
-        </>
-      ) : src ? (
-        // eslint-disable-next-line @next/next/no-img-element
-        <img src={withBasePath(src)} alt={alt} className="absolute inset-0 h-full w-full object-cover" loading="lazy" />
-      ) : (
-        <div role="img" aria-label={alt} className="grain absolute inset-0 flex items-center justify-center">
-          <Illustration art={art} className={artClassName ?? "h-[46%] max-h-56 w-auto opacity-70"} />
-        </div>
-      )}
+      {media}
       {children}
     </div>
+  );
+}
+
+/** Đường trang trí: vạch mảnh – hình thoi – vạch mảnh */
+export function Ornament({ className }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 160 12" className={cn("h-3 w-40", className)} fill="none" stroke="currentColor" aria-hidden>
+      <path d="M0 6h62M98 6h62" strokeWidth="0.75" />
+      <path d="M80 1l5 5-5 5-5-5z" strokeWidth="0.9" />
+      <circle cx="68" cy="6" r="1.2" fill="currentColor" stroke="none" />
+      <circle cx="92" cy="6" r="1.2" fill="currentColor" stroke="none" />
+    </svg>
   );
 }
 

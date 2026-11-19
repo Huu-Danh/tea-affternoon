@@ -19,7 +19,7 @@ export function Stepper({
   size?: "sm" | "md";
 }) {
   const b = cn(
-    "flex items-center justify-center rounded-full border border-line text-ink transition hover:border-forest hover:text-forest disabled:opacity-30 disabled:hover:border-line disabled:hover:text-ink",
+    "flex items-center justify-center rounded-full border border-line text-ink transition hover:border-navy hover:text-navy disabled:opacity-30 disabled:hover:border-line disabled:hover:text-ink",
     size === "md" ? "size-10" : "size-8",
   );
   return (
